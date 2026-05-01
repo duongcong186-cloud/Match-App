@@ -11,7 +11,7 @@ export function OrderingIntroScreen({ navigation }: Props) {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={[styles.introHeader, { backgroundColor: category.color }]}>
-          <TouchableOpacity style={styles.headerBack} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.headerBack} onPress={() => navigation.navigate('HomeMain')}>
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
           <View style={styles.introHeaderContent}>
