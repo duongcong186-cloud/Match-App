@@ -1,6 +1,6 @@
 import React from 'react';
+import { LevelSelector } from '../../../components/LevelSelector';
 import { categories } from '../constants/categories';
-import { LevelSelector } from '../components/LevelSelector';
 import { Props } from '../types';
 
 export function GeometryLevelScreen({ navigation }: Props) {

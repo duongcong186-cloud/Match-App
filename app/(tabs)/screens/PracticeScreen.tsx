@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import FeedbackMessage from '../../../components/FeedbackMessage';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
@@ -115,28 +116,33 @@ const generateCountingQuestion = (level: number): Question => {
 };
 
 const generateGeometryQuestion = (level: number): Question => {
-  // Helper function to create exactly 4 options
-  const createFourOptions = (correct: number, wrong1: number, wrong2: number, wrong3: number) => {
+  // Helper function to create exactly 4 options (shape names)
+  const createFourShapeOptions = (correct: string, wrong1: string, wrong2: string, wrong3: string) => {
     return shuffle([correct, wrong1, wrong2, wrong3]);
   };
 
   if (level <= 3) {
-    // Level 1-3: Basic shapes
+    // Level 1-3: Basic shapes - identify shapes
     const basicQuestions = [
       {
-        prompt: 'How many sides does a triangle have?',
-        answer: 3,
-        options: createFourOptions(3, 4, 5, 6)
+        prompt: '🔺 Which shape is this?',
+        answer: 'Triangle',
+        options: createFourShapeOptions('Triangle', 'Square', 'Circle', 'Rectangle')
       },
       {
-        prompt: 'How many sides does a square have?',
-        answer: 4,
-        options: createFourOptions(4, 3, 5, 6)
+        prompt: '⬜ Which shape is this?',
+        answer: 'Square',
+        options: createFourShapeOptions('Square', 'Triangle', 'Circle', 'Rectangle')
       },
       {
-        prompt: 'How many sides does a circle have?',
-        answer: 0,
-        options: createFourOptions(0, 3, 4, 5)
+        prompt: '⭕ Which shape is this?',
+        answer: 'Circle',
+        options: createFourShapeOptions('Circle', 'Triangle', 'Square', 'Rectangle')
+      },
+      {
+        prompt: '▭ Which shape is this?',
+        answer: 'Rectangle',
+        options: createFourShapeOptions('Rectangle', 'Square', 'Triangle', 'Circle')
       }
     ];
     
@@ -147,27 +153,32 @@ const generateGeometryQuestion = (level: number): Question => {
       options: question.options
     };
   } else if (level <= 6) {
-    // Level 4-6: Intermediate shapes
+    // Level 4-6: Intermediate shapes - identify more complex shapes
     const intermediateQuestions = [
       {
-        prompt: 'How many sides does a rectangle have?',
-        answer: 4,
-        options: createFourOptions(4, 5, 6, 3)
+        prompt: '⬟ Which shape is this?',
+        answer: 'Pentagon',
+        options: createFourShapeOptions('Pentagon', 'Triangle', 'Square', 'Hexagon')
       },
       {
-        prompt: 'How many sides does a pentagon have?',
-        answer: 5,
-        options: createFourOptions(5, 4, 6, 7)
+        prompt: '⬢ Which shape is this?',
+        answer: 'Hexagon',
+        options: createFourShapeOptions('Hexagon', 'Pentagon', 'Square', 'Circle')
       },
       {
-        prompt: 'How many sides does a hexagon have?',
-        answer: 6,
-        options: createFourOptions(6, 5, 7, 4)
+        prompt: '🔷 Which shape is this?',
+        answer: 'Diamond',
+        options: createFourShapeOptions('Diamond', 'Square', 'Triangle', 'Circle')
       },
       {
-        prompt: 'How many sides does a triangle have?',
-        answer: 3,
-        options: createFourOptions(3, 4, 5, 6)
+        prompt: '⬠ Which shape is this?',
+        answer: 'Trapezoid',
+        options: createFourShapeOptions('Trapezoid', 'Rectangle', 'Square', 'Triangle')
+      },
+      {
+        prompt: '⬡ Which shape is this?',
+        answer: 'Rhombus',
+        options: createFourShapeOptions('Rhombus', 'Square', 'Diamond', 'Rectangle')
       }
     ];
     
@@ -178,27 +189,32 @@ const generateGeometryQuestion = (level: number): Question => {
       options: question.options
     };
   } else if (level <= 8) {
-    // Level 7-8: Complex shapes
+    // Level 7-8: Complex shapes - identify advanced 2D shapes
     const complexQuestions = [
       {
-        prompt: 'How many sides does an octagon have?',
-        answer: 8,
-        options: createFourOptions(8, 7, 9, 6)
+        prompt: '⭐ Which shape is this?',
+        answer: 'Star',
+        options: createFourShapeOptions('Star', 'Circle', 'Triangle', 'Square')
       },
       {
-        prompt: 'How many sides does a nonagon have?',
-        answer: 9,
-        options: createFourOptions(9, 8, 10, 7)
+        prompt: '❤️ Which shape is this?',
+        answer: 'Heart',
+        options: createFourShapeOptions('Heart', 'Circle', 'Star', 'Diamond')
       },
       {
-        prompt: 'How many sides does a decagon have?',
-        answer: 10,
-        options: createFourOptions(10, 9, 8, 11)
+        prompt: '🌙 Which shape is this?',
+        answer: 'Crescent',
+        options: createFourShapeOptions('Crescent', 'Circle', 'Moon', 'Oval')
       },
       {
-        prompt: 'How many sides does a heptagon have?',
-        answer: 7,
-        options: createFourOptions(7, 6, 8, 9)
+        prompt: '⬭ Which shape is this?',
+        answer: 'Octagon',
+        options: createFourShapeOptions('Octagon', 'Hexagon', 'Circle', 'Square')
+      },
+      {
+        prompt: '🔶 Which shape is this?',
+        answer: 'Parallelogram',
+        options: createFourShapeOptions('Parallelogram', 'Rectangle', 'Square', 'Rhombus')
       }
     ];
     
@@ -209,37 +225,37 @@ const generateGeometryQuestion = (level: number): Question => {
       options: question.options
     };
   } else {
-    // Level 9-10: Advanced geometry
+    // Level 9-10: Advanced geometry - 3D shapes and complex properties
     const advancedQuestions = [
       {
-        prompt: 'How many sides does a dodecagon have?',
-        answer: 12,
-        options: createFourOptions(12, 10, 8, 6)
+        prompt: '🔷 Which 3D shape has 6 faces?',
+        answer: 'Cube',
+        options: createFourShapeOptions('Cube', 'Sphere', 'Pyramid', 'Cylinder')
       },
       {
-        prompt: 'How many vertices does a cube have?',
-        answer: 8,
-        options: createFourOptions(8, 6, 12, 4)
+        prompt: '🔺 Which 3D shape has 4 faces?',
+        answer: 'Pyramid',
+        options: createFourShapeOptions('Pyramid', 'Cube', 'Cone', 'Sphere')
       },
       {
-        prompt: 'How many edges does a triangular pyramid have?',
-        answer: 6,
-        options: createFourOptions(6, 8, 4, 12)
+        prompt: '⭕ Which 3D shape has no faces?',
+        answer: 'Sphere',
+        options: createFourShapeOptions('Sphere', 'Cube', 'Cylinder', 'Cone')
       },
       {
-        prompt: 'How many faces does a rectangular prism have?',
-        answer: 6,
-        options: createFourOptions(6, 8, 4, 12)
+        prompt: '🥛 Which 3D shape has 2 circular faces?',
+        answer: 'Cylinder',
+        options: createFourShapeOptions('Cylinder', 'Cone', 'Sphere', 'Cube')
       },
       {
-        prompt: 'How many vertices does a square pyramid have?',
-        answer: 5,
-        options: createFourOptions(5, 4, 6, 8)
+        prompt: '🎩 Which 3D shape has 1 circular face?',
+        answer: 'Cone',
+        options: createFourShapeOptions('Cone', 'Cylinder', 'Pyramid', 'Sphere')
       },
       {
-        prompt: 'How many edges does a cube have?',
-        answer: 12,
-        options: createFourOptions(12, 8, 6, 10)
+        prompt: '📦 Which shape has 12 edges?',
+        answer: 'Cube',
+        options: createFourShapeOptions('Cube', 'Rectangular Prism', 'Pyramid', 'Cylinder')
       }
     ];
     
@@ -393,20 +409,13 @@ export function PracticeScreen({ route, navigation }: Props) {
         </View>
 
         {answered && (
-          <Text style={[styles.feedbackText, { color: isCorrect ? '#10b981' : '#ef4444' }]}>
-            {isCorrect ? 'Correct! Great job.' : `Incorrect — the correct answer is ${currentQuestion?.answer}.`}
-          </Text>
+          <FeedbackMessage 
+            isCorrect={isCorrect}
+            correctAnswer={currentQuestion?.answer}
+          />
         )}
 
-        <View style={styles.practiceBottomActions}>
-          <TouchableOpacity style={styles.practiceIconButton}>
-            <Ionicons name="help-circle-outline" size={28} color="#3b82f6" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.practiceIconButton}>
-            <Ionicons name="volume-mute-outline" size={28} color="#6b7280" />
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+              </ScrollView>
 
       {answered && (
         <View style={styles.practiceNextButtonContainer}>

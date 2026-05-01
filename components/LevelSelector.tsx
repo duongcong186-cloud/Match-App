@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { styles } from '../styles';
-import { Category } from '../types';
+import { styles } from '../app/(tabs)/styles';
+import { Category } from '../app/(tabs)/types';
 
 interface LevelSelectorProps {
   category: Category;
@@ -21,16 +21,16 @@ export function LevelSelector({
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         {/* Header with back button and title */}
-        <View style={[styles.levelGridHeader, { backgroundColor: category.color }]}>
-          <View style={styles.levelGridHeaderRow}>
+        <View style={[styles.practiceHeader, { backgroundColor: category.color }]}>
+          <View style={styles.practiceHeaderRow}>
             <TouchableOpacity
-              style={styles.levelGridHeaderBack}
+              style={styles.practiceBackButton}
               onPress={() => navigation.goBack()}
             >
               <Ionicons name="arrow-back" size={24} color="#fff" />
             </TouchableOpacity>
-            <View style={styles.levelGridHeaderText}>
-              <Text style={styles.levelGridTitle}>{category.title}</Text>
+            <View style={styles.practiceHeaderTextGroup}>
+              <Text style={styles.practiceHeaderTitle}>{category.title}</Text>
             </View>
           </View>
         </View>

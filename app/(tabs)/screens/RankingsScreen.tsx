@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from 'react';
-import { Text, View, ScrollView, SafeAreaView } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { styles } from '../styles';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useState } from 'react';
+import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { categories } from '../constants/categories';
-import { loadRankings, LevelResult } from '../utils/storage';
+import { styles } from '../styles';
+import { LevelResult, loadRankings } from '../utils/storage';
 
 const formatDate = (timestamp: number) => {
   const date = new Date(timestamp);
@@ -12,6 +12,8 @@ const formatDate = (timestamp: number) => {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   });
 };
 
@@ -59,24 +61,48 @@ export function RankingsScreen() {
         {results.length === 0 ? (
           <Text style={styles.rankingEmpty}>No completed levels yet. Play a level to save your best score.</Text>
         ) : (
-          results.map((result, index) => (
-            <View key={`${result.topic}:${result.level}`} style={styles.rankingListItem}>
-              <View style={styles.rankingBadge}>
-                <Text style={styles.rankingBadgeText}>{index + 1}</Text>
-              </View>
-              <View style={styles.rankingInfo}>
-                <View style={styles.rankingRow}>
-                  <Text style={styles.rankingScore}>{result.score}/10</Text>
-                  <Text style={styles.rankingTime}>{result.duration}s</Text>
+          results.map((result, index) => {
+            const rank = index + 1;
+            let badgeStyle = styles.rankingBadge;
+            let badgeTextStyle = styles.rankingBadgeText;
+            let badgeBgColor = '#eff6ff';
+            let badgeTextColor = '#1d4ed8';
+            
+            // Medal colors and icons for top 3
+            let medalIcon = '';
+            if (rank === 1) {
+              badgeBgColor = '#fef3c7'; // Gold
+              badgeTextColor = '#d97706';
+              medalIcon = '🥇';
+            } else if (rank === 2) {
+              badgeBgColor = '#f3f4f6'; // Silver
+              badgeTextColor = '#6b7280';
+              medalIcon = '🥈';
+            } else if (rank === 3) {
+              badgeBgColor = '#fed7aa'; // Bronze
+              badgeTextColor = '#ea580c';
+              medalIcon = '🥉';
+            }
+            
+            return (
+              <View key={`${result.topic}:${result.level}`} style={styles.rankingListItem}>
+                <View style={[badgeStyle, { backgroundColor: badgeBgColor }]}>
+                  <Text style={[badgeTextStyle, { color: badgeTextColor, fontSize: 20 }]}>{medalIcon || rank}</Text>
                 </View>
-                <Text style={styles.rankingTopic}>
-                  {findCategoryTitle(result.topic)} - Level {result.level}
-                </Text>
+                <View style={styles.rankingInfo}>
+                  <View style={styles.rankingRow}>
+                    <Text style={styles.rankingScore}>{result.score}/10</Text>
+                    <Text style={styles.rankingTime}>{result.duration}s</Text>
+                  </View>
+                  <Text style={styles.rankingTopic}>
+                    {findCategoryTitle(result.topic)} - Level {result.level}
+                  </Text>
+                </View>
+                <Text style={styles.rankingDate}>{formatDate(result.timestamp)}</Text>
+                <Ionicons name="chevron-forward" size={18} color="#cbd5e1" style={styles.rankingIcon} />
               </View>
-              <Text style={styles.rankingDate}>{formatDate(result.timestamp)}</Text>
-              <Ionicons name="chevron-forward" size={18} color="#cbd5e1" style={styles.rankingIcon} />
-            </View>
-          ))
+            );
+          })
         )}
       </ScrollView>
     </SafeAreaView>

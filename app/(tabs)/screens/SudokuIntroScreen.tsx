@@ -1,8 +1,8 @@
-import React from 'react';
-import { Text, View, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { styles } from '../styles';
+import React from 'react';
+import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { categories } from '../constants/categories';
+import { styles } from '../styles';
 import { Props } from '../types';
 
 export function SudokuIntroScreen({ navigation }: Props) {
@@ -35,7 +35,7 @@ export function SudokuIntroScreen({ navigation }: Props) {
               {sudokuGrid.map((row, i) => (
                 <View key={i} style={styles.sudokuRow}>
                   {row.map((cell, j) => (
-                    <View key={j} style={[styles.sudokuCell, { borderRightWidth: j < 2 ? 1 : 0, borderBottomWidth: i < 2 ? 1 : 0 }]}>
+                    <View key={j} style={styles.sudokuCell}>
                       <Text style={styles.sudokuText}>{cell}</Text>
                     </View>
                   ))}

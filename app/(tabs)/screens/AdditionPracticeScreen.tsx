@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
-import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import FeedbackMessage from '../../../components/FeedbackMessage';
+import GameTimer from '../../../components/GameTimer';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
@@ -48,6 +50,12 @@ export function AdditionPracticeScreen({ route, navigation }: Props) {
   const [startTime, setStartTime] = useState(Date.now());
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
+  // Animation values
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const shakeAnim = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
   useEffect(() => {
     const newQuestions = Array.from({ length: 10 }, () => generateQuestion(level));
     setQuestions(newQuestions);
@@ -66,17 +74,82 @@ export function AdditionPracticeScreen({ route, navigation }: Props) {
     if (answered || currentQuestion == null) return;
     setSelectedAnswer(option);
     setAnswered(true);
+    
+    // Trigger animation
     if (option === currentQuestion.answer) {
+      // Correct answer - scale up animation
+      Animated.sequence([
+        Animated.timing(scaleAnim, {
+          toValue: 1.1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
       setCorrectCount(count => count + 1);
+    } else {
+      // Wrong answer - shake animation
+      Animated.sequence([
+        Animated.timing(shakeAnim, {
+          toValue: 10,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shakeAnim, {
+          toValue: -10,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shakeAnim, {
+          toValue: 10,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shakeAnim, {
+          toValue: 0,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+      ]).start();
     }
   };
 
+  const animateTransition = (callback: () => void) => {
+    setIsTransitioning(true);
+    
+    // Fade out
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      // Change content
+      callback();
+      
+      // Fade in
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        setIsTransitioning(false);
+      });
+    });
+  };
+
   const handleNext = async () => {
-    if (!answered) return;
+    if (!answered || isTransitioning) return;
+    
     if (currentIndex < questions.length - 1) {
-      setCurrentIndex(index => index + 1);
-      setSelectedAnswer(null);
-      setAnswered(false);
+      animateTransition(() => {
+        setCurrentIndex(index => index + 1);
+        setSelectedAnswer(null);
+        setAnswered(false);
+      });
       return;
     }
 
@@ -109,6 +182,12 @@ export function AdditionPracticeScreen({ route, navigation }: Props) {
       <View style={styles.practiceMetaContainer}>
         <Text style={[styles.practiceMetaText, { color: category.color }]}>Level {level}</Text>
         <Text style={[styles.practiceMetaText, { color: category.color }]}>{currentIndex + 1}/10</Text>
+        <GameTimer 
+          startTime={startTime} 
+          isRunning={!answered} 
+          onTimeUpdate={setElapsedSeconds}
+          color={category.color}
+        />
       </View>
 
       <View style={styles.progressBarContainer}>
@@ -116,9 +195,9 @@ export function AdditionPracticeScreen({ route, navigation }: Props) {
       </View>
 
       <ScrollView contentContainerStyle={styles.practiceScroll} showsVerticalScrollIndicator={false}>
-        <View style={styles.questionCard}>
+        <Animated.View style={[styles.questionCard, { opacity: fadeAnim }]}>
           <Text style={styles.questionText}>{currentQuestion.prompt}</Text>
-        </View>
+        </Animated.View>
 
         <View style={styles.optionsContainer}>
           {currentQuestion.options.map((option, idx) => {
@@ -138,22 +217,36 @@ export function AdditionPracticeScreen({ route, navigation }: Props) {
             const textColor = selected || correct ? '#ffffff' : '#111827';
 
             return (
-              <TouchableOpacity
+              <Animated.View
                 key={idx}
-                style={[styles.optionButton, { backgroundColor, borderColor: backgroundColor }]}
-                onPress={() => handleAnswer(option)}
-                disabled={answered}
+                style={[
+                  styles.optionButton, 
+                  { backgroundColor, borderColor: backgroundColor },
+                  selected && answered && (option === currentQuestion.answer) && {
+                    transform: [{ scale: scaleAnim }]
+                  },
+                  selected && answered && (option !== currentQuestion.answer) && {
+                    transform: [{ translateX: shakeAnim }]
+                  }
+                ]}
               >
+                <TouchableOpacity
+                  style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, gap: 12 }}
+                  onPress={() => handleAnswer(option)}
+                  disabled={answered}
+                >
                 <Text style={[styles.optionLabel, { color: textColor }]}>{String.fromCharCode(65 + idx)}</Text>
                 <Text style={[styles.optionText, { color: textColor }]}>{option}</Text>
-              </TouchableOpacity>
+                </TouchableOpacity>
+              </Animated.View>
             );
           })}
         </View>
         {answered && (
-          <Text style={[styles.feedbackText, { color: isCorrect ? '#10b981' : '#ef4444' }]}>
-            {isCorrect ? 'Correct! Great job.' : `Incorrect — the correct answer is ${currentQuestion?.answer}.`}
-          </Text>
+          <FeedbackMessage 
+            isCorrect={isCorrect}
+            correctAnswer={currentQuestion?.answer}
+          />
         )}
       </ScrollView>
 

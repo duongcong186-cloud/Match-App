@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import FeedbackMessage from '../../../components/FeedbackMessage';
+import GameTimer from '../../../components/GameTimer';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
@@ -46,6 +48,7 @@ export function VideoLessonsPracticeScreen({ route, navigation }: Props) {
   const [answered, setAnswered] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [startTime, setStartTime] = useState(Date.now());
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   useEffect(() => {
     const newQuestions = Array.from({ length: 10 }, () => generateQuestion(level));
@@ -107,6 +110,12 @@ export function VideoLessonsPracticeScreen({ route, navigation }: Props) {
       <View style={styles.practiceMetaContainer}>
         <Text style={[styles.practiceMetaText, { color: category.color }]}>Level {level}</Text>
         <Text style={[styles.practiceMetaText, { color: category.color }]}>{currentIndex + 1}/10</Text>
+        <GameTimer 
+          startTime={startTime} 
+          isRunning={!answered} 
+          onTimeUpdate={setElapsedSeconds}
+          color={category.color}
+        />
       </View>
 
       <View style={styles.progressBarContainer}>
@@ -158,9 +167,10 @@ export function VideoLessonsPracticeScreen({ route, navigation }: Props) {
           })}
         </View>
         {answered && (
-          <Text style={[styles.feedbackText, { color: isCorrect ? '#10b981' : '#ef4444' }]}>
-            {isCorrect ? 'Correct! Great job.' : `Incorrect — the correct answer is ${currentQuestion?.answer}.`}
-          </Text>
+          <FeedbackMessage 
+            isCorrect={isCorrect}
+            correctAnswer={currentQuestion?.answer}
+          />
         )}
       </ScrollView>
 

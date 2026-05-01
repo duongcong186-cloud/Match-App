@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
-import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import FeedbackMessage from '../../../components/FeedbackMessage';
+import GameTimer from '../../../components/GameTimer';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
@@ -37,6 +39,10 @@ export function ComparisonPracticeScreen({ route, navigation }: Props) {
   const [answered, setAnswered] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [startTime, setStartTime] = useState(Date.now());
+  
+  // Animation states
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   useEffect(() => {
@@ -62,14 +68,41 @@ export function ComparisonPracticeScreen({ route, navigation }: Props) {
     }
   };
 
+  const animateTransition = (callback: () => void) => {
+    setIsTransitioning(true);
+    
+    // Fade out
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      // Change content
+      callback();
+      
+      // Fade in
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        setIsTransitioning(false);
+      });
+    });
+  };
+
   const handleNext = async () => {
-    if (!answered) return;
+    if (!answered || isTransitioning) return;
+    
     if (currentIndex < questions.length - 1) {
-      setCurrentIndex(index => index + 1);
-      setSelectedAnswer(null);
-      setAnswered(false);
+      animateTransition(() => {
+        setCurrentIndex(index => index + 1);
+        setSelectedAnswer(null);
+        setAnswered(false);
+      });
       return;
     }
+
     const duration = Math.round((Date.now() - startTime) / 1000);
     await saveLevelResult(category.key, level, correctCount, duration);
     navigation.navigate('Result', {
@@ -99,6 +132,12 @@ export function ComparisonPracticeScreen({ route, navigation }: Props) {
       <View style={styles.practiceMetaContainer}>
         <Text style={[styles.practiceMetaText, { color: category.color }]}>Level {level}</Text>
         <Text style={[styles.practiceMetaText, { color: category.color }]}>{currentIndex + 1}/10</Text>
+        <GameTimer 
+          startTime={startTime} 
+          isRunning={!answered} 
+          onTimeUpdate={setElapsedSeconds}
+          color={category.color}
+        />
       </View>
 
       <View style={styles.progressBarContainer}>
@@ -106,9 +145,9 @@ export function ComparisonPracticeScreen({ route, navigation }: Props) {
       </View>
 
       <ScrollView contentContainerStyle={styles.practiceScroll} showsVerticalScrollIndicator={false}>
-        <View style={styles.questionCard}>
+        <Animated.View style={[styles.questionCard, { opacity: fadeAnim }]}>
           <Text style={styles.questionText}>{currentQuestion.prompt}</Text>
-        </View>
+        </Animated.View>
 
         <View style={styles.optionsContainer}>
           {currentQuestion.options.map((option, idx) => {
@@ -140,9 +179,10 @@ export function ComparisonPracticeScreen({ route, navigation }: Props) {
           })}
         </View>
         {answered && (
-          <Text style={[styles.feedbackText, { color: isCorrect ? '#10b981' : '#ef4444' }]}>
-            {isCorrect ? 'Correct! Great job.' : `Incorrect — the correct answer is ${currentQuestion?.answer}.`}
-          </Text>
+          <FeedbackMessage 
+            isCorrect={isCorrect}
+            correctAnswer={currentQuestion?.answer}
+          />
         )}
       </ScrollView>
 

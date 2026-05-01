@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import FeedbackMessage from '../../../components/FeedbackMessage';
+import GameTimer from '../../../components/GameTimer';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
@@ -26,15 +28,75 @@ const generateSequence = (level: number) => {
 const generateQuestion = (level: number): Question => {
   const sequence = generateSequence(level);
   const shuffled = shuffle(sequence);
-  const prompt = `Arrange in increasing order: ${shuffled.join(', ')}`;
-  const answer = [...sequence].sort((a, b) => a - b).join(', ');
-  const options = shuffle([
-    answer,
-    [...sequence].sort((a, b) => b - a).join(', '),
-    shuffle([...sequence]).join(', '),
-    shuffle([...sequence]).join(', '),
-  ]);
-  return { prompt, answer, options };
+  const scenario = Math.random();
+  let prompt = '';
+  let answer = '';
+  let options: string[] = [];
+
+  if (scenario < 0.2) {
+    // Ascending order
+    prompt = `Arrange from smallest to largest: ${shuffled.join(', ')}`;
+    answer = [...sequence].sort((a, b) => a - b).join(', ');
+    options = shuffle([
+      answer,
+      [...sequence].sort((a, b) => b - a).join(', '),
+      shuffle([...sequence]).join(', '),
+      shuffle([...sequence]).join(', '),
+    ]);
+  } else if (scenario < 0.4) {
+    // Descending order
+    prompt = `Arrange from largest to smallest: ${shuffled.join(', ')}`;
+    answer = [...sequence].sort((a, b) => b - a).join(', ');
+    options = shuffle([
+      answer,
+      [...sequence].sort((a, b) => a - b).join(', '),
+      shuffle([...sequence]).join(', '),
+      shuffle([...sequence]).join(', '),
+    ]);
+  } else if (scenario < 0.6) {
+    // Find largest
+    prompt = `Which number is largest? ${shuffled.join(', ')}`;
+    answer = Math.max(...shuffled).toString();
+    options = shuffle([
+      answer,
+      Math.min(...shuffled).toString(),
+      shuffled[0].toString(),
+      shuffled[shuffled.length - 1].toString(),
+    ]);
+  } else if (scenario < 0.8) {
+    // Find smallest
+    prompt = `Which number is smallest? ${shuffled.join(', ')}`;
+    answer = Math.min(...shuffled).toString();
+    options = shuffle([
+      answer,
+      Math.max(...shuffled).toString(),
+      shuffled[0].toString(),
+      shuffled[shuffled.length - 1].toString(),
+    ]);
+  } else {
+    // Find middle/position
+    const sorted = [...shuffled].sort((a, b) => a - b);
+    const middleIndex = Math.floor(sorted.length / 2);
+    prompt = `Which number is in the middle? ${shuffled.join(', ')}`;
+    answer = sorted[middleIndex].toString();
+    options = shuffle([
+      answer,
+      sorted[0].toString(),
+      sorted[sorted.length - 1].toString(),
+      shuffled[Math.floor(Math.random() * shuffled.length)].toString(),
+    ]);
+  }
+
+  // Ensure unique options
+  const uniqueOptions = [...new Set(options)];
+  while (uniqueOptions.length < 4) {
+    const randomNum = Math.floor(Math.random() * 20) + 1;
+    if (!uniqueOptions.includes(randomNum.toString())) {
+      uniqueOptions.push(randomNum.toString());
+    }
+  }
+
+  return { prompt, answer, options: shuffle(uniqueOptions.slice(0, 4)) };
 };
 
 export function OrderingPracticeScreen({ route, navigation }: Props) {
@@ -46,6 +108,10 @@ export function OrderingPracticeScreen({ route, navigation }: Props) {
   const [answered, setAnswered] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [startTime, setStartTime] = useState(Date.now());
+  
+  // Animation states
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   useEffect(() => {
@@ -71,14 +137,41 @@ export function OrderingPracticeScreen({ route, navigation }: Props) {
     }
   };
 
+  const animateTransition = (callback: () => void) => {
+    setIsTransitioning(true);
+    
+    // Fade out
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      // Change content
+      callback();
+      
+      // Fade in
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        setIsTransitioning(false);
+      });
+    });
+  };
+
   const handleNext = async () => {
-    if (!answered) return;
+    if (!answered || isTransitioning) return;
+    
     if (currentIndex < questions.length - 1) {
-      setCurrentIndex(index => index + 1);
-      setSelectedAnswer(null);
-      setAnswered(false);
+      animateTransition(() => {
+        setCurrentIndex(index => index + 1);
+        setSelectedAnswer(null);
+        setAnswered(false);
+      });
       return;
     }
+    
     const duration = Math.round((Date.now() - startTime) / 1000);
     await saveLevelResult(category.key, level, correctCount, duration);
     navigation.navigate('Result', {
@@ -108,6 +201,12 @@ export function OrderingPracticeScreen({ route, navigation }: Props) {
       <View style={styles.practiceMetaContainer}>
         <Text style={[styles.practiceMetaText, { color: category.color }]}>Level {level}</Text>
         <Text style={[styles.practiceMetaText, { color: category.color }]}>{currentIndex + 1}/10</Text>
+        <GameTimer 
+          startTime={startTime} 
+          isRunning={!answered} 
+          onTimeUpdate={setElapsedSeconds}
+          color={category.color}
+        />
       </View>
 
       <View style={styles.progressBarContainer}>
@@ -115,9 +214,9 @@ export function OrderingPracticeScreen({ route, navigation }: Props) {
       </View>
 
       <ScrollView contentContainerStyle={styles.practiceScroll} showsVerticalScrollIndicator={false}>
-        <View style={styles.questionCard}>
+        <Animated.View style={[styles.questionCard, { opacity: fadeAnim }]}>
           <Text style={styles.questionText}>{currentQuestion.prompt}</Text>
-        </View>
+        </Animated.View>
 
         <View style={styles.optionsContainer}>
           {currentQuestion.options.map((option, idx) => {
@@ -149,9 +248,10 @@ export function OrderingPracticeScreen({ route, navigation }: Props) {
           })}
         </View>
         {answered && (
-          <Text style={[styles.feedbackText, { color: isCorrect ? '#10b981' : '#ef4444' }]}>
-            {isCorrect ? 'Correct! Great job.' : `Incorrect — the correct answer is ${currentQuestion?.answer}.`}
-          </Text>
+          <FeedbackMessage 
+            isCorrect={isCorrect}
+            correctAnswer={currentQuestion?.answer}
+          />
         )}
       </ScrollView>
 
