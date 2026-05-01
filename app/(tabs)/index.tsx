@@ -36,11 +36,11 @@ import {
 const Stack = createNativeStackNavigator();
 
 // -------- Stack for Home --------
-function HomeStack() {
+function HomeStack({ initialRouteName = 'HomeMain' }: { initialRouteName?: string }) {
   return (
     <Stack.Navigator 
       screenOptions={{ headerShown: false }}
-      initialRouteName="HomeMain"
+      initialRouteName={initialRouteName}
     >
       <Stack.Screen name="HomeMain" component={HomeScreen} />
       <Stack.Screen name="AdditionIntro" component={AdditionIntroScreen} />
@@ -80,3 +80,5 @@ function HomeStack() {
 export default function App() {
   return <HomeStack />;
 }
+
+export { HomeStack };

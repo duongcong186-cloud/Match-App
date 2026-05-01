@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, ScrollView, SafeAreaView, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { styles } from '../styles';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { categories } from '../constants/categories';
+import { styles } from '../styles';
 import { Props } from '../types';
 
 type QuestionOption = number | string;
@@ -20,9 +20,11 @@ const generateOptions = (answer: number, spread: number) => {
   while (options.size < 4) {
     const delta = Math.floor(Math.random() * spread) + 1;
     const wrong = Math.random() > 0.5 ? answer + delta : answer - delta;
-    if (wrong > 0) options.add(wrong);
+    if (wrong > 0 && wrong !== answer) options.add(wrong);
   }
-  return shuffle(Array.from(options));
+  const result = Array.from(options);
+  // Ensure exactly 4 options by taking first 4 if more were generated
+  return shuffle(result.slice(0, 4));
 };
 
 const generateAdditionQuestion = (level: number): Question => {
@@ -113,20 +115,141 @@ const generateCountingQuestion = (level: number): Question => {
 };
 
 const generateGeometryQuestion = (level: number): Question => {
-  const shapes = [
-    { label: 'Triangle', sides: 3 },
-    { label: 'Square', sides: 4 },
-    { label: 'Rectangle', sides: 4 },
-    { label: 'Pentagon', sides: 5 },
-    { label: 'Hexagon', sides: 6 },
-  ];
-  const item = shapes[Math.floor(Math.random() * shapes.length)];
-
-  return {
-    prompt: `How many sides does a ${item.label} have?`,
-    answer: item.sides,
-    options: generateOptions(item.sides, 4),
+  // Helper function to create exactly 4 options
+  const createFourOptions = (correct: number, wrong1: number, wrong2: number, wrong3: number) => {
+    return shuffle([correct, wrong1, wrong2, wrong3]);
   };
+
+  if (level <= 3) {
+    // Level 1-3: Basic shapes
+    const basicQuestions = [
+      {
+        prompt: 'How many sides does a triangle have?',
+        answer: 3,
+        options: createFourOptions(3, 4, 5, 6)
+      },
+      {
+        prompt: 'How many sides does a square have?',
+        answer: 4,
+        options: createFourOptions(4, 3, 5, 6)
+      },
+      {
+        prompt: 'How many sides does a circle have?',
+        answer: 0,
+        options: createFourOptions(0, 3, 4, 5)
+      }
+    ];
+    
+    const question = basicQuestions[Math.floor(Math.random() * basicQuestions.length)];
+    return {
+      prompt: question.prompt,
+      answer: question.answer,
+      options: question.options
+    };
+  } else if (level <= 6) {
+    // Level 4-6: Intermediate shapes
+    const intermediateQuestions = [
+      {
+        prompt: 'How many sides does a rectangle have?',
+        answer: 4,
+        options: createFourOptions(4, 5, 6, 3)
+      },
+      {
+        prompt: 'How many sides does a pentagon have?',
+        answer: 5,
+        options: createFourOptions(5, 4, 6, 7)
+      },
+      {
+        prompt: 'How many sides does a hexagon have?',
+        answer: 6,
+        options: createFourOptions(6, 5, 7, 4)
+      },
+      {
+        prompt: 'How many sides does a triangle have?',
+        answer: 3,
+        options: createFourOptions(3, 4, 5, 6)
+      }
+    ];
+    
+    const question = intermediateQuestions[Math.floor(Math.random() * intermediateQuestions.length)];
+    return {
+      prompt: question.prompt,
+      answer: question.answer,
+      options: question.options
+    };
+  } else if (level <= 8) {
+    // Level 7-8: Complex shapes
+    const complexQuestions = [
+      {
+        prompt: 'How many sides does an octagon have?',
+        answer: 8,
+        options: createFourOptions(8, 7, 9, 6)
+      },
+      {
+        prompt: 'How many sides does a nonagon have?',
+        answer: 9,
+        options: createFourOptions(9, 8, 10, 7)
+      },
+      {
+        prompt: 'How many sides does a decagon have?',
+        answer: 10,
+        options: createFourOptions(10, 9, 8, 11)
+      },
+      {
+        prompt: 'How many sides does a heptagon have?',
+        answer: 7,
+        options: createFourOptions(7, 6, 8, 9)
+      }
+    ];
+    
+    const question = complexQuestions[Math.floor(Math.random() * complexQuestions.length)];
+    return {
+      prompt: question.prompt,
+      answer: question.answer,
+      options: question.options
+    };
+  } else {
+    // Level 9-10: Advanced geometry
+    const advancedQuestions = [
+      {
+        prompt: 'How many sides does a dodecagon have?',
+        answer: 12,
+        options: createFourOptions(12, 10, 8, 6)
+      },
+      {
+        prompt: 'How many vertices does a cube have?',
+        answer: 8,
+        options: createFourOptions(8, 6, 12, 4)
+      },
+      {
+        prompt: 'How many edges does a triangular pyramid have?',
+        answer: 6,
+        options: createFourOptions(6, 8, 4, 12)
+      },
+      {
+        prompt: 'How many faces does a rectangular prism have?',
+        answer: 6,
+        options: createFourOptions(6, 8, 4, 12)
+      },
+      {
+        prompt: 'How many vertices does a square pyramid have?',
+        answer: 5,
+        options: createFourOptions(5, 4, 6, 8)
+      },
+      {
+        prompt: 'How many edges does a cube have?',
+        answer: 12,
+        options: createFourOptions(12, 8, 6, 10)
+      }
+    ];
+    
+    const question = advancedQuestions[Math.floor(Math.random() * advancedQuestions.length)];
+    return {
+      prompt: question.prompt,
+      answer: question.answer,
+      options: question.options
+    };
+  }
 };
 
 const generateWordProblemQuestion = (level: number): Question => {
@@ -206,49 +329,46 @@ export function PracticeScreen({ route, navigation }: Props) {
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: '#f8fafc' }]}>
-      <View style={[styles.practiceHeader, { backgroundColor: category?.color ?? '#3b82f6' }]}>
-        <TouchableOpacity style={styles.practiceBackButton} onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={28} color="#ffffff" />
-        </TouchableOpacity>
-        <View style={styles.practiceHeaderContent}>
-          <View style={styles.screenHeaderIcon}>
-            <Ionicons name={category?.icon as any ?? "help-circle"} size={26} color="#fff" />
-          </View>
-          <View style={styles.practiceHeaderTextGroup}>
-            <Text style={[styles.practiceHeaderTitle, { color: '#ffffff' }]}>{category?.title ?? 'Practice'}</Text>
-            <Text style={styles.practiceHeaderSubtitle}>{category?.subtitle ?? 'Practice questions'}</Text>
+      <View style={styles.container}>
+        <View style={[styles.practiceHeader, { backgroundColor: category?.color ?? '#3b82f6' }]}>
+          <View style={styles.practiceHeaderRow}>
+            <TouchableOpacity style={styles.practiceBackButton} onPress={() => navigation.goBack()}>
+              <Ionicons name="chevron-back" size={28} color="#ffffff" />
+            </TouchableOpacity>
+            <View style={styles.practiceHeaderTextGroup}>
+              <Text style={[styles.practiceHeaderTitle, { color: '#ffffff' }]}>{category?.title ?? 'Practice'}</Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      <View style={styles.practiceMetaContainer}>
-        <Text style={[styles.practiceMetaText, { color: category?.color ?? '#3b82f6' }]}>Level {level}</Text>
-        <Text style={[styles.practiceMetaText, { color: category?.color ?? '#3b82f6' }]}>{currentIndex + 1}/10</Text>
-      </View>
-
-      <View style={styles.progressBarContainer}>
-        <View style={[styles.progressBar, { width: progressWidth }]} />
-      </View>
-
-      <ScrollView contentContainerStyle={styles.practiceScroll} showsVerticalScrollIndicator={false}>
-        <View style={styles.questionCard}>
-          <Text style={styles.questionText}>{currentQuestion.prompt}</Text>
+        <View style={styles.practiceMetaContainer}>
+          <Text style={[styles.practiceMetaText, { color: category?.color ?? '#3b82f6' }]}>Level {level}</Text>
+          <Text style={[styles.practiceMetaText, { color: category?.color ?? '#3b82f6' }]}>{currentIndex + 1}/10</Text>
         </View>
 
-        <View style={styles.optionsContainer}>
-          {currentQuestion.options.map((option, idx) => {
-            const isSelected = selectedAnswer === option;
-            const backgroundColor = !answered
-              ? isSelected
-                ? category?.color
-                : '#ffffff'
-              : isSelected
-                ? isCorrect
-                  ? '#10b981'
-                  : '#ef4444'
-                : option === currentQuestion.answer
-                  ? '#10b981'
-                  : '#ffffff';
+        <View style={styles.progressBarContainer}>
+          <View style={[styles.progressBar, { width: progressWidth, backgroundColor: category?.color ?? '#3b82f6' }]} />
+        </View>
+
+        <ScrollView contentContainerStyle={styles.practiceScroll} showsVerticalScrollIndicator={false}>
+          <View style={styles.questionCard}>
+            <Text style={styles.questionText}>{currentQuestion.prompt}</Text>
+          </View>
+
+          <View style={styles.optionsContainer}>
+            {currentQuestion.options.map((option, idx) => {
+              const isSelected = selectedAnswer === option;
+              const backgroundColor = !answered
+                ? isSelected
+                  ? category?.color
+                  : '#ffffff'
+                : isSelected
+                  ? isCorrect
+                    ? '#10b981'
+                    : '#ef4444'
+                  : option === currentQuestion.answer
+                    ? '#10b981'
+                    : '#ffffff';
 
             const textColor = !answered
               ? isSelected
@@ -271,6 +391,12 @@ export function PracticeScreen({ route, navigation }: Props) {
             );
           })}
         </View>
+
+        {answered && (
+          <Text style={[styles.feedbackText, { color: isCorrect ? '#10b981' : '#ef4444' }]}>
+            {isCorrect ? 'Correct! Great job.' : `Incorrect — the correct answer is ${currentQuestion?.answer}.`}
+          </Text>
+        )}
 
         <View style={styles.practiceBottomActions}>
           <TouchableOpacity style={styles.practiceIconButton}>
@@ -297,6 +423,7 @@ export function PracticeScreen({ route, navigation }: Props) {
           </TouchableOpacity>
         </View>
       )}
+    </View>
     </SafeAreaView>
   );
 }

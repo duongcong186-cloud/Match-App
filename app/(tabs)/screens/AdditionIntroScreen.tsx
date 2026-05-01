@@ -11,16 +11,14 @@ export function AdditionIntroScreen({ navigation }: Props) {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={[styles.introHeader, { backgroundColor: category.color }]}>
-          <TouchableOpacity style={styles.headerBack} onPress={() => navigation.navigate('HomeMain')}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
           <View style={styles.introHeaderContent}>
-            <View style={styles.screenHeaderIcon}>
-              <Ionicons name={category.icon as any} size={26} color="#fff" />
-            </View>
-            <View style={styles.headerTitleGroup}>
-              <Text style={styles.introTitle}>{category.title}</Text>
-              <Text style={styles.introSubtitle}>{category.subtitle}</Text>
+            <TouchableOpacity style={styles.headerBackInline} onPress={() => navigation.goBack()}>
+              <Ionicons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+            <View style={styles.introHeaderTitleGroup}>
+              <Text style={styles.introTitle} numberOfLines={1}>
+                {category.title}
+              </Text>
             </View>
           </View>
         </View>

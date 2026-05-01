@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, TouchableOpacity, ScrollView, SafeAreaView, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { styles } from '../styles';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { categories } from '../constants/categories';
+import { styles } from '../styles';
 import { Props } from '../types';
 import { saveLevelResult } from '../utils/storage';
 
@@ -94,17 +94,14 @@ export function GeometryPracticeScreen({ route, navigation }: Props) {
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: '#f8fafc' }]}> 
+      <View style={styles.container}> 
       <View style={[styles.practiceHeader, { backgroundColor: category.color }]}>
-        <TouchableOpacity style={styles.practiceBackButton} onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={28} color="#ffffff" />
-        </TouchableOpacity>
-        <View style={styles.practiceHeaderContent}>
-          <View style={styles.screenHeaderIcon}>
-            <Ionicons name={category.icon as any} size={26} color="#fff" />
-          </View>
+        <View style={styles.practiceHeaderRow}>
+          <TouchableOpacity style={styles.practiceBackButton} onPress={() => navigation.goBack()}>
+            <Ionicons name="chevron-back" size={28} color="#ffffff" />
+          </TouchableOpacity>
           <View style={styles.practiceHeaderTextGroup}>
             <Text style={[styles.practiceHeaderTitle, { color: '#ffffff' }]}>{category.title}</Text>
-            <Text style={styles.practiceHeaderSubtitle}>{category.subtitle}</Text>
           </View>
         </View>
       </View>
@@ -185,6 +182,7 @@ export function GeometryPracticeScreen({ route, navigation }: Props) {
           </TouchableOpacity>
         </View>
       )}
+      </View>
     </SafeAreaView>
   );
 }
