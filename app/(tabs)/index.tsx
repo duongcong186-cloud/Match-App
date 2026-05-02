@@ -1,36 +1,35 @@
-import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React from 'react';
 import {
-  HomeScreen,
-  AdditionIntroScreen,
-  MultiplicationIntroScreen,
-  ComparisonIntroScreen,
-  OrderingIntroScreen,
-  SudokuIntroScreen,
-  CountingIntroScreen,
-  GeometryIntroScreen,
-  WordProblemsIntroScreen,
-  VideoLessonsIntroScreen,
-  AdditionLevelScreen,
-  MultiplicationLevelScreen,
-  ComparisonLevelScreen,
-  OrderingLevelScreen,
-  SudokuLevelScreen,
-  CountingLevelScreen,
-  GeometryLevelScreen,
-  WordProblemsLevelScreen,
-  VideoLessonsLevelScreen,
-  AdditionPracticeScreen,
-  MultiplicationPracticeScreen,
-  ComparisonPracticeScreen,
-  OrderingPracticeScreen,
-  SudokuPracticeScreen,
-  CountingPracticeScreen,
-  GeometryPracticeScreen,
-  WordProblemsPracticeScreen,
-  VideoLessonsPracticeScreen,
-  ResultScreen,
-  RankingsScreen,
+    AdditionIntroScreen,
+    AdditionLevelScreen,
+    AdditionPracticeScreen,
+    ComparisonIntroScreen,
+    ComparisonLevelScreen,
+    ComparisonPracticeScreen,
+    CountingIntroScreen,
+    CountingLevelScreen,
+    CountingPracticeScreen,
+    GeometryIntroScreen,
+    GeometryLevelScreen,
+    GeometryPracticeScreen,
+    HomeScreen,
+    MultiplicationIntroScreen,
+    MultiplicationLevelScreen,
+    MultiplicationPracticeScreen,
+    OrderingIntroScreen,
+    OrderingLevelScreen,
+    OrderingPracticeScreen,
+    RankingsScreen,
+    ResultScreen,
+    SudokuIntroScreen,
+    SudokuLevelScreen,
+    SudokuPracticeScreen,
+    VideoLessonsIntroScreen,
+    VideoLessonsLevelScreen,
+    WordProblemsIntroScreen,
+    WordProblemsLevelScreen,
+    WordProblemsPracticeScreen,
 } from './screens';
 
 const Stack = createNativeStackNavigator();
@@ -69,8 +68,7 @@ function HomeStack({ initialRouteName = 'HomeMain' }: { initialRouteName?: strin
       <Stack.Screen name="CountingPractice" component={CountingPracticeScreen} />
       <Stack.Screen name="GeometryPractice" component={GeometryPracticeScreen} />
       <Stack.Screen name="WordProblemsPractice" component={WordProblemsPracticeScreen} />
-      <Stack.Screen name="VideoLessonsPractice" component={VideoLessonsPracticeScreen} />
-      <Stack.Screen name="Result" component={ResultScreen} />
+            <Stack.Screen name="Result" component={ResultScreen} />
       <Stack.Screen name="Rankings" component={RankingsScreen} />
     </Stack.Navigator>
   );
@@ -82,3 +80,4 @@ export default function App() {
 }
 
 export { HomeStack };
+
