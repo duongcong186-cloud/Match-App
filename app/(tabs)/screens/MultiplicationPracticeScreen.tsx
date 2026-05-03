@@ -7,6 +7,7 @@ import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
 import { saveLevelResult } from '../utils/storage';
+import { soundManager } from '../utils/sounds';
 
 type QuestionOption = number;
 
@@ -80,8 +81,13 @@ export function MultiplicationPracticeScreen({ route, navigation }: Props) {
     if (answered || !currentQuestion) return;
     setSelectedAnswer(option);
     setAnswered(true);
+    
+    // Play sound based on answer
     if (option === currentQuestion.answer) {
+      soundManager.playCorrectSound();
       setCorrectCount(count => count + 1);
+    } else {
+      soundManager.playWrongSound();
     }
   };
 

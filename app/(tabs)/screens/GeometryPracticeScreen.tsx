@@ -1,12 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
-import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { AnimatedOptionButton } from '../../../components/AnimatedOptionButton';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FeedbackMessage from '../../../components/FeedbackMessage';
 import GameTimer from '../../../components/GameTimer';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
+import { soundManager } from '../utils/sounds';
 import { saveLevelResult } from '../utils/storage';
 
 type QuestionOption = string;
@@ -385,7 +385,10 @@ export function GeometryPracticeScreen({ route, navigation }: Props) {
     setSelectedAnswer(option);
     setAnswered(true);
     if (option === currentQuestion.answer) {
+      soundManager.playCorrectSound();
       setCorrectCount(count => count + 1);
+    } else {
+      soundManager.playWrongSound();
     }
   };
 
@@ -467,18 +470,15 @@ export function GeometryPracticeScreen({ route, navigation }: Props) {
                   : '#ffffff';
             const textColor = selected || correct ? '#ffffff' : '#111827';
             return (
-              <AnimatedOptionButton
+              <TouchableOpacity
                 key={idx}
-                option={option}
-                idx={idx}
-                selected={selected}
-                answered={answered}
-                correct={correct}
-                backgroundColor={backgroundColor}
-                textColor={textColor}
+                style={[styles.optionButton, { backgroundColor, borderColor: backgroundColor }]}
                 onPress={() => handleAnswer(option)}
                 disabled={answered}
-              />
+              >
+                <Text style={[styles.optionLabel, { color: textColor }]}>{String.fromCharCode(65 + idx)}</Text>
+                <Text style={[styles.optionText, { color: textColor }]}>{option}</Text>
+              </TouchableOpacity>
             );
           })}
         </View>

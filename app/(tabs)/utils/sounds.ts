@@ -96,27 +96,62 @@ export class SoundManager {
   }
 
   private playSystemSound(type: 'correct' | 'wrong' | 'transition') {
-    // For React Native, we can use Expo Haptics for vibration feedback
-    // This provides haptic feedback as a substitute for audio
+    // For React Native, use both system sound and haptics for better feedback
     if (Platform.OS !== 'web') {
       try {
         // Import dynamically to avoid issues
         const { Haptics } = require('expo-haptics');
+        const { Audio } = require('expo-av');
         
         switch (type) {
           case 'correct':
+            // Play success sound
+            this.playAudioFile('correct');
+            // Add haptic feedback
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             break;
           case 'wrong':
+            // Play wrong sound
+            this.playAudioFile('wrong');
+            // Add haptic feedback
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
             break;
           case 'transition':
+            // Play transition sound
+            this.playAudioFile('transition');
+            // Add haptic feedback
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             break;
         }
       } catch (error) {
-        console.log('Haptics not available:', error);
+        console.log('Sound/Haptics not available:', error);
       }
+    }
+  }
+
+  private async playAudioFile(type: 'correct' | 'wrong' | 'transition') {
+    try {
+      const { Audio } = require('expo-av');
+      
+      // Define sound files
+      const soundFiles = {
+        correct: require('../../assets/sounds/correct.mp3'),
+        wrong: require('../../assets/sounds/wrong.mp3'),
+        transition: require('../../assets/sounds/transition.mp3')
+      };
+      
+      const { sound } = await Audio.Sound.createAsync(soundFiles[type]);
+      
+      await sound.playAsync();
+      
+      // Clean up the sound
+      sound.setOnPlaybackStatusUpdate(async (status) => {
+        if (status.didJustFinish) {
+          await sound.unloadAsync();
+        }
+      });
+    } catch (error) {
+      console.log('Error playing audio file:', error);
     }
   }
 }

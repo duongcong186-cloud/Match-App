@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
-import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FeedbackMessage from '../../../components/FeedbackMessage';
 import GameTimer from '../../../components/GameTimer';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
+import { soundManager } from '../utils/sounds';
 import { saveLevelResult } from '../utils/storage';
 
 type QuestionOption = string;
@@ -133,7 +134,10 @@ export function OrderingPracticeScreen({ route, navigation }: Props) {
     setSelectedAnswer(option);
     setAnswered(true);
     if (option === currentQuestion.answer) {
+      soundManager.playCorrectSound();
       setCorrectCount(count => count + 1);
+    } else {
+      soundManager.playWrongSound();
     }
   };
 

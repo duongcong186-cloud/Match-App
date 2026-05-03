@@ -91,7 +91,7 @@ export function AnimatedOptionButton({
       ]}
     >
       <TouchableOpacity
-        style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, gap: 12 }}
+        style={styles.optionButton}
         onPress={handlePress}
         disabled={disabled}
       >

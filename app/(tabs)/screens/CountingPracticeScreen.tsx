@@ -7,6 +7,7 @@ import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
 import { saveLevelResult } from '../utils/storage';
+import { soundManager } from '../utils/sounds';
 
 type QuestionOption = number;
 
@@ -63,7 +64,10 @@ export function CountingPracticeScreen({ route, navigation }: Props) {
     setSelectedAnswer(option);
     setAnswered(true);
     if (option === currentQuestion.answer) {
+      soundManager.playCorrectSound();
       setCorrectCount(count => count + 1);
+    } else {
+      soundManager.playWrongSound();
     }
   };
 

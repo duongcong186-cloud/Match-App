@@ -6,6 +6,7 @@ import GameTimer from '../../../components/GameTimer';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
+import { soundManager } from '../utils/sounds';
 import { saveLevelResult } from '../utils/storage';
 
 type QuestionOption = number;
@@ -75,9 +76,10 @@ export function AdditionPracticeScreen({ route, navigation }: Props) {
     setSelectedAnswer(option);
     setAnswered(true);
     
-    // Trigger animation
+    // Trigger animation and sound
     if (option === currentQuestion.answer) {
-      // Correct answer - scale up animation
+      // Correct answer - scale up animation and sound
+      soundManager.playCorrectSound();
       Animated.sequence([
         Animated.timing(scaleAnim, {
           toValue: 1.1,
@@ -92,7 +94,8 @@ export function AdditionPracticeScreen({ route, navigation }: Props) {
       ]).start();
       setCorrectCount(count => count + 1);
     } else {
-      // Wrong answer - shake animation
+      // Wrong answer - shake animation and sound
+      soundManager.playWrongSound();
       Animated.sequence([
         Animated.timing(shakeAnim, {
           toValue: 10,
@@ -217,28 +220,15 @@ export function AdditionPracticeScreen({ route, navigation }: Props) {
             const textColor = selected || correct ? '#ffffff' : '#111827';
 
             return (
-              <Animated.View
+              <TouchableOpacity
                 key={idx}
-                style={[
-                  styles.optionButton, 
-                  { backgroundColor, borderColor: backgroundColor },
-                  selected && answered && (option === currentQuestion.answer) && {
-                    transform: [{ scale: scaleAnim }]
-                  },
-                  selected && answered && (option !== currentQuestion.answer) && {
-                    transform: [{ translateX: shakeAnim }]
-                  }
-                ]}
+                style={[styles.optionButton, { backgroundColor, borderColor: backgroundColor }]}
+                onPress={() => handleAnswer(option)}
+                disabled={answered}
               >
-                <TouchableOpacity
-                  style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, gap: 12 }}
-                  onPress={() => handleAnswer(option)}
-                  disabled={answered}
-                >
                 <Text style={[styles.optionLabel, { color: textColor }]}>{String.fromCharCode(65 + idx)}</Text>
                 <Text style={[styles.optionText, { color: textColor }]}>{option}</Text>
-                </TouchableOpacity>
-              </Animated.View>
+              </TouchableOpacity>
             );
           })}
         </View>
