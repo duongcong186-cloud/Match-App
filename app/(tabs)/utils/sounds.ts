@@ -133,23 +133,26 @@ export class SoundManager {
     try {
       const { Audio } = require('expo-av');
       
-      // Define sound files
+      // Define sound files with correct paths
       const soundFiles = {
-        correct: require('../../assets/sounds/correct.mp3'),
-        wrong: require('../../assets/sounds/wrong.mp3'),
-        transition: require('../../assets/sounds/transition.mp3')
+        correct: require('../../assets/correct.mp3.ogg'),
+        wrong: require('../../assets/wrong.mp3.mp3'),
+        transition: null // No transition file available, use haptics only
       };
       
-      const { sound } = await Audio.Sound.createAsync(soundFiles[type]);
-      
-      await sound.playAsync();
-      
-      // Clean up the sound
-      sound.setOnPlaybackStatusUpdate(async (status) => {
-        if (status.didJustFinish) {
-          await sound.unloadAsync();
-        }
-      });
+      // Only play if sound file exists
+      if (soundFiles[type]) {
+        const { sound } = await Audio.Sound.createAsync(soundFiles[type]);
+        
+        await sound.playAsync();
+        
+        // Clean up the sound
+        sound.setOnPlaybackStatusUpdate(async (status: any) => {
+          if (status.didJustFinish) {
+            await sound.unloadAsync();
+          }
+        });
+      }
     } catch (error) {
       console.log('Error playing audio file:', error);
     }
