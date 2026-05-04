@@ -179,6 +179,54 @@ const generateQuestion = (level: number): Question => {
         answer: 'Rectangle',
         options: createFourShapeOptions('Rectangle', 'Square', 'Triangle', 'Circle'),
         shapeImage: 'rectangle'
+      },
+      {
+        prompt: 'What shape has 3 sides?',
+        answer: 'Triangle',
+        options: createFourShapeOptions('Triangle', 'Square', 'Circle', 'Rectangle'),
+        shapeImage: 'triangle'
+      },
+      {
+        prompt: 'What shape has 4 equal sides?',
+        answer: 'Square',
+        options: createFourShapeOptions('Square', 'Rectangle', 'Triangle', 'Circle'),
+        shapeImage: 'square'
+      },
+      {
+        prompt: 'What shape has no corners?',
+        answer: 'Circle',
+        options: createFourShapeOptions('Circle', 'Square', 'Triangle', 'Rectangle'),
+        shapeImage: 'circle'
+      },
+      {
+        prompt: 'What shape has 4 right angles?',
+        answer: 'Rectangle',
+        options: createFourShapeOptions('Rectangle', 'Square', 'Triangle', 'Circle'),
+        shapeImage: 'rectangle'
+      },
+      {
+        prompt: 'Which shape looks like a pizza slice?',
+        answer: 'Triangle',
+        options: createFourShapeOptions('Triangle', 'Square', 'Circle', 'Rectangle'),
+        shapeImage: 'triangle'
+      },
+      {
+        prompt: 'Which shape looks like a box?',
+        answer: 'Square',
+        options: createFourShapeOptions('Square', 'Rectangle', 'Triangle', 'Circle'),
+        shapeImage: 'square'
+      },
+      {
+        prompt: 'Which shape looks like a ball?',
+        answer: 'Circle',
+        options: createFourShapeOptions('Circle', 'Square', 'Triangle', 'Rectangle'),
+        shapeImage: 'circle'
+      },
+      {
+        prompt: 'Which shape looks like a door?',
+        answer: 'Rectangle',
+        options: createFourShapeOptions('Rectangle', 'Square', 'Triangle', 'Circle'),
+        shapeImage: 'rectangle'
       }
     ];
     
@@ -222,6 +270,60 @@ const generateQuestion = (level: number): Question => {
         answer: 'Rhombus',
         options: createFourShapeOptions('Rhombus', 'Square', 'Diamond', 'Rectangle'),
         shapeImage: 'rhombus'
+      },
+      {
+        prompt: 'What shape has 5 sides?',
+        answer: 'Pentagon',
+        options: createFourShapeOptions('Pentagon', 'Hexagon', 'Square', 'Triangle'),
+        shapeImage: 'pentagon'
+      },
+      {
+        prompt: 'What shape has 6 sides?',
+        answer: 'Hexagon',
+        options: createFourShapeOptions('Hexagon', 'Pentagon', 'Square', 'Circle'),
+        shapeImage: 'hexagon'
+      },
+      {
+        prompt: 'What shape has 4 equal sides but not right angles?',
+        answer: 'Diamond',
+        options: createFourShapeOptions('Diamond', 'Square', 'Rectangle', 'Rhombus'),
+        shapeImage: 'diamond'
+      },
+      {
+        prompt: 'What shape has one pair of parallel sides?',
+        answer: 'Trapezoid',
+        options: createFourShapeOptions('Trapezoid', 'Rectangle', 'Square', 'Triangle'),
+        shapeImage: 'trapezoid'
+      },
+      {
+        prompt: 'What shape looks like a tilted square?',
+        answer: 'Diamond',
+        options: createFourShapeOptions('Diamond', 'Square', 'Rectangle', 'Rhombus'),
+        shapeImage: 'diamond'
+      },
+      {
+        prompt: 'Which shape is used in stop signs?',
+        answer: 'Octagon',
+        options: createFourShapeOptions('Octagon', 'Hexagon', 'Square', 'Circle'),
+        shapeImage: 'octagon'
+      },
+      {
+        prompt: 'What shape has opposite sides parallel?',
+        answer: 'Parallelogram',
+        options: createFourShapeOptions('Parallelogram', 'Rectangle', 'Square', 'Triangle'),
+        shapeImage: 'parallelogram'
+      },
+      {
+        prompt: 'Which shape looks like a diamond ring?',
+        answer: 'Diamond',
+        options: createFourShapeOptions('Diamond', 'Square', 'Circle', 'Triangle'),
+        shapeImage: 'diamond'
+      },
+      {
+        prompt: 'What shape has 8 sides?',
+        answer: 'Octagon',
+        options: createFourShapeOptions('Octagon', 'Hexagon', 'Square', 'Circle'),
+        shapeImage: 'octagon'
       }
     ];
     
@@ -264,6 +366,66 @@ const generateQuestion = (level: number): Question => {
         prompt: 'Which shape is this?',
         answer: 'Parallelogram',
         options: createFourShapeOptions('Parallelogram', 'Rectangle', 'Square', 'Rhombus'),
+        shapeImage: 'parallelogram'
+      },
+      {
+        prompt: 'Which shape has 5 points?',
+        answer: 'Star',
+        options: createFourShapeOptions('Star', 'Circle', 'Triangle', 'Square'),
+        shapeImage: 'star'
+      },
+      {
+        prompt: 'Which shape symbolizes love?',
+        answer: 'Heart',
+        options: createFourShapeOptions('Heart', 'Circle', 'Star', 'Diamond'),
+        shapeImage: 'heart'
+      },
+      {
+        prompt: 'Which shape looks like the moon?',
+        answer: 'Crescent',
+        options: createFourShapeOptions('Crescent', 'Circle', 'Moon', 'Oval'),
+        shapeImage: 'crescent'
+      },
+      {
+        prompt: 'Which shape has 8 sides?',
+        answer: 'Octagon',
+        options: createFourShapeOptions('Octagon', 'Hexagon', 'Square', 'Circle'),
+        shapeImage: 'octagon'
+      },
+      {
+        prompt: 'Which shape has opposite sides parallel but not equal?',
+        answer: 'Parallelogram',
+        options: createFourShapeOptions('Parallelogram', 'Rectangle', 'Square', 'Rhombus'),
+        shapeImage: 'parallelogram'
+      },
+      {
+        prompt: 'What shape is used for rating stars?',
+        answer: 'Star',
+        options: createFourShapeOptions('Star', 'Circle', 'Triangle', 'Diamond'),
+        shapeImage: 'star'
+      },
+      {
+        prompt: 'Which shape has two curves?',
+        answer: 'Heart',
+        options: createFourShapeOptions('Heart', 'Circle', 'Star', 'Diamond'),
+        shapeImage: 'heart'
+      },
+      {
+        prompt: 'Which shape looks like a banana?',
+        answer: 'Crescent',
+        options: createFourShapeOptions('Crescent', 'Circle', 'Moon', 'Oval'),
+        shapeImage: 'crescent'
+      },
+      {
+        prompt: 'Which shape is used in traffic signs?',
+        answer: 'Octagon',
+        options: createFourShapeOptions('Octagon', 'Hexagon', 'Square', 'Circle'),
+        shapeImage: 'octagon'
+      },
+      {
+        prompt: 'What shape has 4 sides with different angles?',
+        answer: 'Parallelogram',
+        options: createFourShapeOptions('Parallelogram', 'Rectangle', 'Square', 'Triangle'),
         shapeImage: 'parallelogram'
       }
     ];
@@ -314,6 +476,78 @@ const generateQuestion = (level: number): Question => {
         answer: 'Cube',
         options: createFourShapeOptions('Cube', 'Rectangular Prism', 'Pyramid', 'Cylinder'),
         shapeImage: 'cube'
+      },
+      {
+        prompt: 'Which 3D shape has 8 vertices?',
+        answer: 'Cube',
+        options: createFourShapeOptions('Cube', 'Sphere', 'Pyramid', 'Cylinder'),
+        shapeImage: 'cube'
+      },
+      {
+        prompt: 'Which 3D shape has 5 vertices?',
+        answer: 'Pyramid',
+        options: createFourShapeOptions('Pyramid', 'Cube', 'Cone', 'Sphere'),
+        shapeImage: 'pyramid'
+      },
+      {
+        prompt: 'Which 3D shape has no vertices?',
+        answer: 'Sphere',
+        options: createFourShapeOptions('Sphere', 'Cube', 'Cylinder', 'Cone'),
+        shapeImage: 'sphere'
+      },
+      {
+        prompt: 'Which 3D shape has no edges?',
+        answer: 'Sphere',
+        options: createFourShapeOptions('Sphere', 'Cube', 'Cylinder', 'Cone'),
+        shapeImage: 'sphere'
+      },
+      {
+        prompt: 'Which 3D shape has 2 edges?',
+        answer: 'Cone',
+        options: createFourShapeOptions('Cone', 'Cylinder', 'Pyramid', 'Sphere'),
+        shapeImage: 'cone'
+      },
+      {
+        prompt: 'Which 3D shape looks like a dice?',
+        answer: 'Cube',
+        options: createFourShapeOptions('Cube', 'Sphere', 'Pyramid', 'Cylinder'),
+        shapeImage: 'cube'
+      },
+      {
+        prompt: 'Which 3D shape looks like a ball?',
+        answer: 'Sphere',
+        options: createFourShapeOptions('Sphere', 'Cube', 'Cylinder', 'Cone'),
+        shapeImage: 'sphere'
+      },
+      {
+        prompt: 'Which 3D shape looks like a can?',
+        answer: 'Cylinder',
+        options: createFourShapeOptions('Cylinder', 'Cone', 'Sphere', 'Cube'),
+        shapeImage: 'cylinder'
+      },
+      {
+        prompt: 'Which 3D shape looks like an ice cream cone?',
+        answer: 'Cone',
+        options: createFourShapeOptions('Cone', 'Cylinder', 'Pyramid', 'Sphere'),
+        shapeImage: 'cone'
+      },
+      {
+        prompt: 'Which 3D shape looks like a pyramid in Egypt?',
+        answer: 'Pyramid',
+        options: createFourShapeOptions('Pyramid', 'Cube', 'Cone', 'Sphere'),
+        shapeImage: 'pyramid'
+      },
+      {
+        prompt: 'Which 3D shape has all square faces?',
+        answer: 'Cube',
+        options: createFourShapeOptions('Cube', 'Sphere', 'Pyramid', 'Cylinder'),
+        shapeImage: 'cube'
+      },
+      {
+        prompt: 'Which 3D shape has triangular faces?',
+        answer: 'Pyramid',
+        options: createFourShapeOptions('Pyramid', 'Cube', 'Cone', 'Sphere'),
+        shapeImage: 'pyramid'
       }
     ];
     

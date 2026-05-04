@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { Linking, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { Modal, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { WebView } from 'react-native-webview';
 import { categories } from '../constants/categories';
 import { Props } from '../types';
 
@@ -8,36 +9,39 @@ const videoList = [
   {
     id: 1,
     title: 'Video 1: Basic Math Concepts',
-    url: 'https://youtu.be/mAH1MudP8_g',
+    url: 'https://www.youtube.com/embed/mAH1MudP8_g',
     description: 'Learn basic math concepts for beginners'
   },
   {
     id: 2,
     title: 'Video 2: Advanced Problem Solving',
-    url: 'https://youtu.be/oeUVlnsuYMg',
+    url: 'https://www.youtube.com/embed/oeUVlnsuYMg',
     description: 'Advanced techniques for problem solving'
   },
   {
     id: 3,
     title: 'Video 3: Mental Math Tricks',
-    url: 'https://youtu.be/jLddqiMcCns',
+    url: 'https://www.youtube.com/embed/jLddqiMcCns',
     description: 'Quick mental math tricks and shortcuts'
   },
   {
     id: 4,
     title: 'Video 4: Practice Exercises',
-    url: 'https://youtu.be/QqGMpzLqflE',
+    url: 'https://www.youtube.com/embed/QqGMpzLqflE',
     description: 'Practice exercises and solutions'
   }
 ];
 
 export function VideoLessonsLevelScreen({ navigation }: Props) {
   const category = categories.find(cat => cat.key === 'video')!;
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
 
   const handleVideoPress = (url: string) => {
-    Linking.openURL(url).catch(err => {
-      console.error('Failed to open URL:', err);
-    });
+    setSelectedVideo(url);
+  };
+
+  const closeVideoModal = () => {
+    setSelectedVideo(null);
   };
 
   return (
@@ -120,6 +124,48 @@ export function VideoLessonsLevelScreen({ navigation }: Props) {
           ))}
         </ScrollView>
       </View>
+      
+      {/* WebView Modal for Video */}
+      <Modal
+        visible={selectedVideo !== null}
+        animationType="slide"
+        presentationStyle="fullScreen"
+        onRequestClose={closeVideoModal}
+      >
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
+          <View style={{ 
+            flexDirection: 'row', 
+            alignItems: 'center', 
+            justifyContent: 'space-between',
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            backgroundColor: '#000'
+          }}>
+            <TouchableOpacity onPress={closeVideoModal}>
+              <Ionicons name="chevron-back" size={28} color="#ffffff" />
+            </TouchableOpacity>
+            <Text style={{ color: '#ffffff', fontSize: 18, fontWeight: '600' }}>
+              Video Lesson
+            </Text>
+            <View style={{ width: 28 }} />
+          </View>
+          
+          {selectedVideo && (
+            <WebView
+              source={{ uri: selectedVideo }}
+              style={{ flex: 1 }}
+              allowsFullscreenVideo={true}
+              mediaPlaybackRequiresUserAction={false}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              startInLoadingState={true}
+              scalesPageToFit={true}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 }

@@ -1,14 +1,16 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? 'dark' : 'light';
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
@@ -24,7 +26,7 @@ export default function TabLayout() {
         },
         tabBarStyle: {
           height: 85,
-          paddingBottom: 20,
+          paddingBottom: Math.max(20, insets.bottom),
           paddingTop: 8,
           backgroundColor: '#ffffff',
           borderTopWidth: 1,
@@ -34,14 +36,24 @@ export default function TabLayout() {
           shadowOffset: { width: 0, height: -2 },
           shadowOpacity: 0.1,
           shadowRadius: 4,
+          display: 'flex',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
         },
+        tabBarBackground: () => null,
       }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
-            <IconSymbol size={24} name="house.fill" color={color} />
+            <Ionicons
+              size={24}
+              name={focused ? 'home' : 'home-outline'}
+              color={color}
+            />
           ),
         }}
       />
@@ -50,7 +62,11 @@ export default function TabLayout() {
         options={{
           title: 'Rankings',
           tabBarIcon: ({ color, focused }) => (
-            <IconSymbol size={24} name="trophy.fill" color={color} />
+            <Ionicons
+              size={24}
+              name={focused ? 'trophy' : 'trophy-outline'}
+              color={color}
+            />
           ),
         }}
       />
