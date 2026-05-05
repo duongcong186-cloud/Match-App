@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Modal, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { categories } from '../constants/categories';
+import { styles } from '../styles';
 import { Props } from '../types';
 
 const videoList = [
@@ -46,19 +47,19 @@ export function VideoLessonsLevelScreen({ navigation }: Props) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fafc' }}>
-      <View style={{ flex: 1, backgroundColor: '#f8fafc', paddingTop: 20 }}>
-        <View style={{ position: 'relative', borderRadius: 28, marginHorizontal: 20, paddingTop: 24, padding: 12, paddingBottom: 16, marginBottom: 8, minHeight: 56, backgroundColor: category.color }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
-            <TouchableOpacity style={{ width: 40, height: 40, justifyContent: 'center', alignItems: 'center', marginRight: 16 }} onPress={() => navigation.goBack()}>
+      <View style={{ flex: 1, backgroundColor: '#f8fafc' }}>
+        <View style={[styles.practiceHeader, { backgroundColor: category.color }]}>
+          <View style={styles.practiceHeaderRow}>
+            <TouchableOpacity style={styles.practiceBackButton} onPress={() => navigation.goBack()}>
               <Ionicons name="chevron-back" size={28} color="#ffffff" />
             </TouchableOpacity>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 22, fontWeight: '700', color: '#ffffff' }}>{category.title}</Text>
+            <View style={styles.practiceHeaderTextGroup}>
+              <Text style={[styles.practiceHeaderTitle, { color: '#ffffff' }]}>{category.title}</Text>
             </View>
           </View>
         </View>
 
-        <ScrollView contentContainerStyle={{ padding: 20 }} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 12, paddingBottom: 118 }} showsVerticalScrollIndicator={false}>
           <Text style={{ 
             color: category.color, 
             marginBottom: 20,

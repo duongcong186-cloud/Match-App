@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Animated, Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FeedbackMessage from '../../../components/FeedbackMessage';
 import GameTimer from '../../../components/GameTimer';
+import QuestionSpeechButton from '../../../components/QuestionSpeechButton';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
@@ -138,8 +139,18 @@ const LEVEL_QUESTIONS = {
 // ============================================
 const shuffle = <T,>(items: T[]): T[] => [...items].sort(() => Math.random() - 0.5);
 
-const createFourShapeOptions = (correct: string, ...wrong: string[]): string[] => {
-  return shuffle([correct, ...wrong]);
+const LEVEL_SHAPES = {
+  basic: ['Triangle', 'Square', 'Circle', 'Rectangle'],
+  intermediate: ['Pentagon', 'Hexagon', 'Diamond', 'Trapezoid', 'Rhombus', 'Octagon'],
+  complex: ['Star', 'Heart', 'Crescent', 'Parallelogram'],
+  advanced: ['Cube', 'Pyramid', 'Sphere', 'Cylinder', 'Cone'],
+};
+
+const getShapeNamesForLevel = (level: number) => {
+  if (level <= 3) return LEVEL_SHAPES.basic;
+  if (level <= 6) return LEVEL_SHAPES.intermediate;
+  if (level <= 8) return LEVEL_SHAPES.complex;
+  return LEVEL_SHAPES.advanced;
 };
 
 // Mapping function to ensure shapeImage matches answer
@@ -169,6 +180,20 @@ const getShapeImageForAnswer = (answer: string): string => {
   const mappedShape = shapeMapping[answer] || 'square';
   console.log('🔍 DEBUG MAPPING:', { answer, mappedShape });
   return mappedShape;
+};
+
+const createShapeQuestion = (level: number): Question => {
+  const shapeNames = getShapeNamesForLevel(level);
+  const answer = shapeNames[Math.floor(Math.random() * shapeNames.length)];
+  const wrongOptions = shuffle(shapeNames.filter(shape => shape !== answer)).slice(0, 3);
+
+  return {
+    prompt: level >= 9 ? 'Which 3D shape is shown?' : 'Which shape is shown?',
+    answer,
+    options: shuffle([answer, ...wrongOptions]),
+    targetShape: answer,
+    shapeImage: getShapeImageForAnswer(answer),
+  };
 };
 
 const renderShapeImage = (shapeType: string) => {
@@ -478,6 +503,84 @@ const renderShapeImage = (shapeType: string) => {
     );
   }
 
+  if (shapeType === 'trapezoid') {
+    return (
+      <View style={styles.shapeWrapper}>
+        <View style={{
+          width: 70,
+          height: 0,
+          borderBottomWidth: 58,
+          borderLeftWidth: 24,
+          borderRightWidth: 24,
+          borderLeftColor: 'transparent',
+          borderRightColor: 'transparent',
+          borderBottomColor: '#14b8a6',
+        }} />
+      </View>
+    );
+  }
+
+  if (shapeType === 'octagon') {
+    return (
+      <View style={styles.shapeWrapper}>
+        <View style={{ alignItems: 'center' }}>
+          <View style={{ width: 44, height: 18, backgroundColor: '#10b981' }} />
+          <View style={{ width: 80, height: 44, backgroundColor: '#10b981' }} />
+          <View style={{ width: 44, height: 18, backgroundColor: '#10b981' }} />
+        </View>
+      </View>
+    );
+  }
+
+  if (shapeType === 'cube') {
+    return (
+      <View style={styles.shapeWrapper}>
+        <View style={{ position: 'relative', width: 92, height: 92 }}>
+          <View style={{ position: 'absolute', left: 22, top: 6, width: 56, height: 56, backgroundColor: '#9ca3af', transform: [{ skewX: '-20deg' }] }} />
+          <View style={{ position: 'absolute', left: 8, top: 26, width: 56, height: 56, backgroundColor: '#6b7280' }} />
+          <View style={{ position: 'absolute', left: 64, top: 18, width: 20, height: 56, backgroundColor: '#4b5563', transform: [{ skewY: '-28deg' }] }} />
+        </View>
+      </View>
+    );
+  }
+
+  if (shapeType === 'pyramid') {
+    return (
+      <View style={styles.shapeWrapper}>
+        <View style={{
+          width: 0,
+          height: 0,
+          borderLeftWidth: 46,
+          borderRightWidth: 46,
+          borderBottomWidth: 86,
+          borderLeftColor: 'transparent',
+          borderRightColor: 'transparent',
+          borderBottomColor: '#f97316',
+        }} />
+      </View>
+    );
+  }
+
+  if (shapeType === 'cone') {
+    return (
+      <View style={styles.shapeWrapper}>
+        <View style={{ alignItems: 'center' }}>
+          <View style={{
+            width: 0,
+            height: 0,
+            borderLeftWidth: 40,
+            borderRightWidth: 40,
+            borderBottomWidth: 82,
+            borderLeftColor: 'transparent',
+            borderRightColor: 'transparent',
+            borderBottomColor: '#ef4444',
+          }} />
+          <View style={{ width: 80, height: 18, borderRadius: 40, backgroundColor: '#b91c1c', marginTop: -9 }} />
+        </View>
+      </View>
+    );
+  }
+
   // Fallback to styles-based rendering
   console.log('🔄 Using fallback styles-based rendering for:', shapeType);
   const shapeStyle = SHAPE_STYLES[shapeType];
@@ -526,29 +629,7 @@ const useGeometryGame = (level: number) => {
   const [correctCount, setCorrectCount] = useState(0);
   const [startTime, setStartTime] = useState(Date.now());
 
-  const generateQuestion = useCallback((): Question => {
-    let questionPool: typeof LEVEL_QUESTIONS.basic;
-
-    if (level <= 3) {
-      questionPool = LEVEL_QUESTIONS.basic;
-    } else if (level <= 6) {
-      questionPool = LEVEL_QUESTIONS.intermediate;
-    } else if (level <= 8) {
-      questionPool = LEVEL_QUESTIONS.complex;
-    } else {
-      questionPool = LEVEL_QUESTIONS.advanced;
-    }
-
-    const baseQuestion = questionPool[Math.floor(Math.random() * questionPool.length)];
-    const shapeImage = getShapeImageForAnswer(baseQuestion.answer);
-    
-    return {
-      ...baseQuestion,
-      options: shuffle(baseQuestion.options),
-      targetShape: baseQuestion.answer,
-      shapeImage: shapeImage, // Ensure shapeImage matches answer
-    };
-  }, [level]);
+  const generateQuestion = useCallback((): Question => createShapeQuestion(level), [level]);
 
   useEffect(() => {
     const newQuestions = Array.from({ length: 10 }, () => generateQuestion());
@@ -797,11 +878,19 @@ export function GeometryPracticeScreen({ route, navigation }: Props) {
 
         <ScrollView contentContainerStyle={styles.practiceScroll} showsVerticalScrollIndicator={false}>
           <Animated.View style={[styles.questionCard, { opacity: fadeAnim }]}>
-            <Text style={styles.questionText}>{currentQuestion.prompt}</Text>
+            <Text style={[styles.questionText, styles.geometryQuestionText]}>
+              {currentQuestion.prompt}
+            </Text>
             <View style={styles.shapeImageContainer}>
               <ShapeImage shapeType={currentQuestion.shapeImage} fadeAnim={fadeAnim} />
             </View>
           </Animated.View>
+          <QuestionSpeechButton
+            prompt={currentQuestion.prompt}
+            options={currentQuestion.options}
+            accentColor={category.color}
+            autoPlayKey={currentIndex}
+          />
 
           <View style={styles.optionsContainer}>
             {currentQuestion.options.map((option, idx) => {
@@ -838,30 +927,29 @@ export function GeometryPracticeScreen({ route, navigation }: Props) {
           </View>
 
           {answered && (
-            <FeedbackMessage
-              isCorrect={isCorrect}
-              correctAnswer={currentQuestion.answer}
-            />
+            <>
+              <FeedbackMessage
+                isCorrect={isCorrect}
+                correctAnswer={currentQuestion.answer}
+              />
+              <View style={styles.geometryNextButtonInlineContainer}>
+                <TouchableOpacity
+                  style={[styles.practiceNextButton, { backgroundColor: category.color }]}
+                  onPress={handleNextPress}
+                >
+                  <Text style={styles.practiceNextButtonText}>
+                    {currentIndex === 9 ? 'Finish' : 'Next'}
+                  </Text>
+                  <Ionicons
+                    name={currentIndex === 9 ? 'checkmark' : 'arrow-forward'}
+                    size={20}
+                    color="#ffffff"
+                  />
+                </TouchableOpacity>
+              </View>
+            </>
           )}
         </ScrollView>
-
-        {answered && (
-          <View style={styles.practiceNextButtonContainer}>
-            <TouchableOpacity
-              style={[styles.practiceNextButton, { backgroundColor: category.color }]}
-              onPress={handleNextPress}
-            >
-              <Text style={styles.practiceNextButtonText}>
-                {currentIndex === 9 ? 'Finish' : 'Next'}
-              </Text>
-              <Ionicons
-                name={currentIndex === 9 ? 'checkmark' : 'arrow-forward'}
-                size={20}
-                color="#ffffff"
-              />
-            </TouchableOpacity>
-          </View>
-        )}
       </View>
     </SafeAreaView>
   );

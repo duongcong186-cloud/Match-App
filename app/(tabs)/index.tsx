@@ -27,6 +27,7 @@ import {
     SudokuPracticeScreen,
     VideoLessonsIntroScreen,
     VideoLessonsLevelScreen,
+    WelcomeScreen,
     WordProblemsIntroScreen,
     WordProblemsLevelScreen,
     WordProblemsPracticeScreen,
@@ -35,12 +36,13 @@ import {
 const Stack = createNativeStackNavigator();
 
 // -------- Stack for Home --------
-function HomeStack({ initialRouteName = 'HomeMain' }: { initialRouteName?: string }) {
+function HomeStack({ initialRouteName = 'Welcome' }: { initialRouteName?: string }) {
   return (
     <Stack.Navigator 
       screenOptions={{ headerShown: false }}
       initialRouteName={initialRouteName}
     >
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="HomeMain" component={HomeScreen} />
       <Stack.Screen name="AdditionIntro" component={AdditionIntroScreen} />
       <Stack.Screen name="AdditionLevel" component={AdditionLevelScreen} />
@@ -80,4 +82,3 @@ export default function App() {
 }
 
 export { HomeStack };
-

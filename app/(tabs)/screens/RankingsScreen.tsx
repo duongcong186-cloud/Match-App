@@ -44,7 +44,7 @@ export function RankingsScreen() {
             <View style={styles.rankingHeaderIconWrapper}>
               <Ionicons name="trophy" size={24} color="#1d4ed8" />
             </View>
-            <View>
+            <View style={styles.rankingHeaderTextGroup}>
               <Text style={styles.rankingHeaderTitle}>Rankings</Text>
               <Text style={styles.rankingHeaderSubtitle}>Your best level results, sorted by score.</Text>
             </View>

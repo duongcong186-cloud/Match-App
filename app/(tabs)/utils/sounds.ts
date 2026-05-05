@@ -1,3 +1,4 @@
+import * as Speech from 'expo-speech';
 import { Platform } from 'react-native';
 
 export class SoundManager {
@@ -12,6 +13,7 @@ export class SoundManager {
 
   async playCorrectSound() {
     try {
+      Speech.stop();
       if (Platform.OS === 'web') {
         // Web Audio API for correct sound (positive beep)
         const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -40,6 +42,7 @@ export class SoundManager {
 
   async playWrongSound() {
     try {
+      Speech.stop();
       if (Platform.OS === 'web') {
         // Web Audio API for wrong sound (negative buzz)
         const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();

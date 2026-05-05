@@ -24,6 +24,7 @@ export { SudokuLevelScreen } from './SudokuLevelScreen';
 export { SudokuPracticeScreen } from './SudokuPracticeScreen';
 export { VideoLessonsIntroScreen } from './VideoLessonsIntroScreen';
 export { VideoLessonsLevelScreen } from './VideoLessonsLevelScreen';
+export { WelcomeScreen } from './WelcomeScreen';
 export { WordProblemsIntroScreen } from './WordProblemsIntroScreen';
 export { WordProblemsLevelScreen } from './WordProblemsLevelScreen';
 export { WordProblemsPracticeScreen } from './WordProblemsPracticeScreen';

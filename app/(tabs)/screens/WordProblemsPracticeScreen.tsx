@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FeedbackMessage from '../../../components/FeedbackMessage';
 import GameTimer from '../../../components/GameTimer';
+import QuestionSpeechButton from '../../../components/QuestionSpeechButton';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
@@ -432,6 +433,10 @@ const WordProblemImage = ({ type, color }: { type: string; color: string }) => {
       return renderOperator('+');
     case 'remove-circle-outline':
       return renderOperator('-');
+    case 'divide-circle-outline':
+      return renderOperator('÷');
+    case 'compare-circle-outline':
+      return renderOperator('vs');
     case 'ellipse-outline':
       return renderMarble();
     case 'restaurant-outline':
@@ -488,61 +493,55 @@ const generateQuestion = (level: number): Question => {
       { icon: 'ellipse-outline', count: smaller }
     ];
   } else if (scenario < 0.36) {
-    // Multiplication - groups of objects
-    prompt = `${a} groups of ${b} pencils = ?`;
+    // Multiplication - groups of baskets
+    prompt = `${a} groups of ${b} baskets = ? baskets total`;
     answer = a * b;
     images = Array.from({ length: a }, () => ({ icon: 'basket-outline', count: b }));
   } else if (scenario < 0.48) {
-    // Division - sharing equally
+    // Division - split pizzas into baskets
     const total = a * b;
-    prompt = `${total} cookies shared by ${a} friends = ? each`;
+    prompt = `${total} pizzas divided into ${a} baskets = ? pizzas each`;
     answer = b;
     images = [
       { icon: 'pizza-outline', count: total },
-      { icon: 'remove-circle-outline', count: 1 },
-      { icon: 'paw-outline', count: a }
+      { icon: 'divide-circle-outline', count: 1 },
+      { icon: 'basket-outline', count: a }
     ];
   } else if (scenario < 0.6) {
     // Comparison - which is more
-    prompt = `${a} cats vs ${b} dogs - which is more?`;
+    prompt = `${a} fish vs ${b} cars - which number is more?`;
     answer = a > b ? a : b;
     images = [
-      { icon: 'paw-outline', count: a },
-      { icon: 'add-circle-outline', count: 1 },
-      { icon: 'paw-outline', count: b }
+      { icon: 'fish-outline', count: a },
+      { icon: 'compare-circle-outline', count: 1 },
+      { icon: 'car-outline', count: b }
     ];
   } else if (scenario < 0.72) {
-    // Money problems
-    const priceA = a * 2;
-    const priceB = b * 3;
-    prompt = `${a} books ($${priceA}) + ${b} pens ($${priceB}) = $ total?`;
-    answer = priceA + priceB;
+    // Mixed objects
+    prompt = `${a} cubes + ${b} ice creams = ? items total`;
+    answer = a + b;
     images = [
       { icon: 'cube-outline', count: a },
       { icon: 'add-circle-outline', count: 1 },
       { icon: 'ice-cream-outline', count: b }
     ];
   } else if (scenario < 0.84) {
-    // Time problems
-    const hoursA = a;
-    const hoursB = b;
-    prompt = `${hoursA} hours + ${hoursB} hours = ? hours total`;
-    answer = hoursA + hoursB;
-    images = [
-      { icon: 'car-outline', count: hoursA },
-      { icon: 'add-circle-outline', count: 1 },
-      { icon: 'bicycle-outline', count: hoursB }
-    ];
-  } else {
-    // Distance problems
-    const kmA = a * 5;
-    const kmB = b * 3;
-    prompt = `${kmA}km by car + ${kmB}km by bike = ? km total`;
-    answer = kmA + kmB;
+    // Vehicle counting
+    prompt = `${a} cars + ${b} bicycles = ? vehicles total`;
+    answer = a + b;
     images = [
       { icon: 'car-outline', count: a },
       { icon: 'add-circle-outline', count: 1 },
       { icon: 'bicycle-outline', count: b }
+    ];
+  } else {
+    // Animal and fish counting
+    prompt = `${a} pets + ${b} fish = ? animals total`;
+    answer = a + b;
+    images = [
+      { icon: 'paw-outline', count: a },
+      { icon: 'add-circle-outline', count: 1 },
+      { icon: 'fish-outline', count: b }
     ];
   }
 
@@ -730,6 +729,12 @@ export function WordProblemsPracticeScreen({ route, navigation }: Props) {
             <Text style={styles.questionText}>{currentQuestion.prompt}</Text>
           </View>
         </Animated.View>
+        <QuestionSpeechButton
+          prompt={currentQuestion.prompt}
+          options={currentQuestion.options}
+          accentColor={category.color}
+          autoPlayKey={currentIndex}
+        />
 
         <View style={styles.optionsContainer}>
           {currentQuestion.options.map((option, idx) => {

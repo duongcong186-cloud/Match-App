@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
 
 interface FeedbackMessageProps {
   isCorrect: boolean;
@@ -71,14 +71,17 @@ export function FeedbackMessage({ isCorrect, correctAnswer, showIcon = true }: F
   );
 }
 
+const { width } = Dimensions.get('window');
+const isCompactWidth = width < 380;
+
 const feedbackStyles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    marginHorizontal: 20,
+    paddingVertical: isCompactWidth ? 12 : 16,
+    paddingHorizontal: isCompactWidth ? 14 : 20,
+    marginHorizontal: isCompactWidth ? 0 : 8,
     marginBottom: 16,
     borderRadius: 16,
     backgroundColor: '#ffffff',
@@ -89,12 +92,12 @@ const feedbackStyles = StyleSheet.create({
     elevation: 4,
   },
   iconContainer: {
-    width: 48,
-    height: 48,
+    width: isCompactWidth ? 40 : 48,
+    height: isCompactWidth ? 40 : 48,
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: 12,
   },
   textContainer: {
     flex: 1,
