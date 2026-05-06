@@ -1,10 +1,20 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Modal, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { WebView } from 'react-native-webview';
+import { Image, Modal, Platform, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
+
+// Conditionally import WebView only on native platforms
+let WebView: any = null;
+if (Platform.OS !== 'web') {
+  WebView = require('react-native-webview').WebView;
+}
+
+const getYouTubeThumbnail = (embedUrl: string) => {
+  const videoId = embedUrl.split('/embed/')[1];
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+};
 
 const videoList = [
   {
@@ -45,6 +55,78 @@ export function VideoLessonsLevelScreen({ navigation }: Props) {
     setSelectedVideo(null);
   };
 
+  const getYouTubeHtml = (embedUrl: string) => {
+    return `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            html, body { width: 100%; height: 100%; background-color: #000; overflow: hidden; }
+            .video-container {
+              position: relative;
+              width: 100%;
+              height: 0;
+              padding-bottom: 56.25%;
+            }
+            .video-container iframe {
+              position: absolute;
+              top: 0; left: 0;
+              width: 100%;
+              height: 100%;
+              border: 0;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="video-container">
+            <iframe
+              src="${embedUrl}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </body>
+      </html>
+    `;
+  };
+
+  const renderVideoPlayer = () => {
+    if (!selectedVideo) return null;
+
+    if (Platform.OS === 'web') {
+      // On web, use an iframe directly
+      const iframeSrc = `${selectedVideo}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+      return (
+        <View style={{ flex: 1, backgroundColor: '#000' }}>
+          {/* @ts-ignore - iframe is valid on web */}
+          <iframe
+            src={iframeSrc}
+            style={{ width: '100%', height: '100%', border: 'none' } as any}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          />
+        </View>
+      );
+    }
+
+    // On native, use WebView with HTML wrapper
+    return (
+      <WebView
+        source={{ html: getYouTubeHtml(selectedVideo) }}
+        style={{ flex: 1 }}
+        allowsFullscreenVideo={true}
+        mediaPlaybackRequiresUserAction={false}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        startInLoadingState={true}
+        allowsInlineMediaPlayback={true}
+        mixedContentMode="compatibility"
+      />
+    );
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fafc' }}>
       <View style={{ flex: 1, backgroundColor: '#f8fafc' }}>
@@ -59,7 +141,7 @@ export function VideoLessonsLevelScreen({ navigation }: Props) {
           </View>
         </View>
 
-        <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 12, paddingBottom: 118 }} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 12, paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
           <Text style={{ 
             color: category.color, 
             marginBottom: 20,
@@ -89,37 +171,70 @@ export function VideoLessonsLevelScreen({ navigation }: Props) {
               onPress={() => handleVideoPress(video.url)}
             >
               <View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-                  <Ionicons name="play-circle" size={24} color={category.color} />
+                {/* Thumbnail */}
+                <View style={{
+                  position: 'relative',
+                  width: '100%',
+                  borderRadius: 8,
+                  overflow: 'hidden',
+                  marginBottom: 12,
+                  backgroundColor: '#1a1a2e',
+                }}>
+                  <Image
+                    source={{ uri: getYouTubeThumbnail(video.url) }}
+                    style={{
+                      width: '100%',
+                      aspectRatio: 16 / 9,
+                      borderRadius: 8,
+                    }}
+                    resizeMode="cover"
+                  />
+                  {/* Play button overlay */}
+                  <View style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(0,0,0,0.25)',
+                  }}>
+                    <View style={{
+                      width: 56,
+                      height: 56,
+                      borderRadius: 28,
+                      backgroundColor: 'rgba(255,0,0,0.85)',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                      <Ionicons name="play" size={30} color="#ffffff" style={{ marginLeft: 3 }} />
+                    </View>
+                  </View>
+                </View>
+
+                {/* Title */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+                  <Ionicons name="play-circle" size={20} color={category.color} />
                   <Text style={{ 
                     color: category.color, 
-                    marginLeft: 10, 
-                    fontSize: 16, 
-                    fontWeight: '600',
+                    marginLeft: 8, 
+                    fontSize: 15, 
+                    fontWeight: '700',
                     flex: 1
                   }}>
                     {video.title}
                   </Text>
                 </View>
+
+                {/* Description */}
                 <Text style={{ 
                   color: '#6b7280', 
-                  fontSize: 14, 
-                  marginBottom: 12,
-                  lineHeight: 20
+                  fontSize: 13, 
+                  lineHeight: 18,
                 }}>
                   {video.description}
                 </Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Ionicons name="link" size={16} color={category.color} />
-                  <Text style={{ 
-                    color: category.color, 
-                    marginLeft: 6, 
-                    fontSize: 14, 
-                    fontWeight: '500'
-                  }}>
-                    Watch Now
-                  </Text>
-                </View>
               </View>
             </TouchableOpacity>
           ))}
@@ -151,20 +266,7 @@ export function VideoLessonsLevelScreen({ navigation }: Props) {
             <View style={{ width: 28 }} />
           </View>
           
-          {selectedVideo && (
-            <WebView
-              source={{ uri: selectedVideo }}
-              style={{ flex: 1 }}
-              allowsFullscreenVideo={true}
-              mediaPlaybackRequiresUserAction={false}
-              javaScriptEnabled={true}
-              domStorageEnabled={true}
-              startInLoadingState={true}
-              scalesPageToFit={true}
-              showsHorizontalScrollIndicator={false}
-              showsVerticalScrollIndicator={false}
-            />
-          )}
+          {renderVideoPlayer()}
         </SafeAreaView>
       </Modal>
     </SafeAreaView>

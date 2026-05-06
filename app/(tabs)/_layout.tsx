@@ -25,8 +25,8 @@ export default function TabLayout() {
           fontWeight: '600',
         },
         tabBarStyle: {
-          height: 85,
-          paddingBottom: Math.max(20, insets.bottom),
+          height: 60 + insets.bottom,
+          paddingBottom: insets.bottom,
           paddingTop: 8,
           backgroundColor: '#ffffff',
           borderTopWidth: 1,
@@ -36,11 +36,6 @@ export default function TabLayout() {
           shadowOffset: { width: 0, height: -2 },
           shadowOpacity: 0.1,
           shadowRadius: 4,
-          display: 'flex',
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
         },
         tabBarBackground: () => null,
       }}>
