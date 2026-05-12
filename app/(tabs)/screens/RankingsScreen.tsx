@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useState } from 'react';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { MascotCharacter } from '../../../components/MascotCharacter';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { LevelResult, loadRankings } from '../utils/storage';
@@ -48,6 +49,7 @@ export function RankingsScreen() {
               <Text style={styles.rankingHeaderTitle}>Rankings</Text>
               <Text style={styles.rankingHeaderSubtitle}>Your best level results, sorted by score.</Text>
             </View>
+            <MascotCharacter size="small" />
           </View>
         </View>
 
@@ -63,31 +65,32 @@ export function RankingsScreen() {
         ) : (
           results.map((result, index) => {
             const rank = index + 1;
-            let badgeStyle = styles.rankingBadge;
-            let badgeTextStyle = styles.rankingBadgeText;
             let badgeBgColor = '#eff6ff';
             let badgeTextColor = '#1d4ed8';
+            let badgeIcon: keyof typeof Ionicons.glyphMap | undefined;
             
-            // Medal colors and icons for top 3
-            let medalIcon = '';
             if (rank === 1) {
-              badgeBgColor = '#fef3c7'; // Gold
+              badgeBgColor = '#fef3c7';
               badgeTextColor = '#d97706';
-              medalIcon = '🥇';
+              badgeIcon = 'trophy';
             } else if (rank === 2) {
-              badgeBgColor = '#f3f4f6'; // Silver
+              badgeBgColor = '#f3f4f6';
               badgeTextColor = '#6b7280';
-              medalIcon = '🥈';
+              badgeIcon = 'star';
             } else if (rank === 3) {
-              badgeBgColor = '#fed7aa'; // Bronze
+              badgeBgColor = '#fed7aa';
               badgeTextColor = '#ea580c';
-              medalIcon = '🥉';
+              badgeIcon = 'ribbon';
             }
             
             return (
               <View key={`${result.topic}:${result.level}`} style={styles.rankingListItem}>
-                <View style={[badgeStyle, { backgroundColor: badgeBgColor }]}>
-                  <Text style={[badgeTextStyle, { color: badgeTextColor, fontSize: 20 }]}>{medalIcon || rank}</Text>
+                <View style={[styles.rankingBadge, { backgroundColor: badgeBgColor }]}>
+                  {badgeIcon ? (
+                    <Ionicons name={badgeIcon} size={20} color={badgeTextColor} />
+                  ) : (
+                    <Text style={[styles.rankingBadgeText, { color: badgeTextColor, fontSize: 20 }]}>{rank}</Text>
+                  )}
                 </View>
                 <View style={styles.rankingInfo}>
                   <View style={styles.rankingRow}>

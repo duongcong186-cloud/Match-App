@@ -1,13 +1,14 @@
-import React from 'react';
-import { Text, View, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { styles } from '../styles';
+import React from 'react';
+import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { MascotCharacter } from '../../../components/MascotCharacter';
 import { categories } from '../constants/categories';
+import { styles } from '../styles';
 import { Props } from '../types';
 
 export function WordProblemsIntroScreen({ navigation }: Props) {
   const category = categories.find(cat => cat.key === 'wordproblems')!;
-  
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -21,6 +22,7 @@ export function WordProblemsIntroScreen({ navigation }: Props) {
                 {category.title}
               </Text>
             </View>
+            <MascotCharacter size="small" />
           </View>
         </View>
 
@@ -31,7 +33,7 @@ export function WordProblemsIntroScreen({ navigation }: Props) {
               <View style={styles.cartContainer}>
                 <Ionicons name="cart" size={40} color="#ef4444" />
               </View>
-              
+
               {/* Price Tags */}
               <View style={styles.priceTagsRow}>
                 <View style={[styles.priceTag, { backgroundColor: '#3b82f6' }]}>
@@ -41,15 +43,16 @@ export function WordProblemsIntroScreen({ navigation }: Props) {
                   <Text style={styles.priceText}>$12</Text>
                 </View>
               </View>
-              
+
               {/* Question Mark */}
               <Text style={styles.questionMark}>?</Text>
             </View>
             <View style={styles.heroDivider} />
             <Text style={styles.heroDescription}>{category.description}</Text>
+
           </View>
 
-          <Text style={styles.sectionTitle}>Examples</Text>
+          <Text style={styles.sectionTitle}>Try</Text>
           <View style={styles.examplesRow}>
             {category.examples.map((example, idx) => (
               <View key={idx} style={styles.exampleCard}>
@@ -60,7 +63,7 @@ export function WordProblemsIntroScreen({ navigation }: Props) {
 
           <TouchableOpacity style={[styles.primaryButton, { backgroundColor: category.color }]} onPress={() => navigation.navigate('WordProblemsLevel')}>
             <Ionicons name="play" size={18} color="#fff" style={styles.buttonIcon} />
-            <Text style={styles.primaryButtonText}>Start Practice</Text>
+            <Text style={styles.primaryButtonText}>Play</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>

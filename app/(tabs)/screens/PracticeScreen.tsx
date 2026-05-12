@@ -3,9 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FeedbackMessage from '../../../components/FeedbackMessage';
 import QuestionSpeechButton from '../../../components/QuestionSpeechButton';
+import { MascotCharacter } from '../../../components/MascotCharacter';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
+import { soundManager } from '../utils/sounds';
 
 type QuestionOption = number | string;
 
@@ -332,6 +334,11 @@ export function PracticeScreen({ route, navigation }: Props) {
     if (!answered) {
       setSelectedAnswer(option);
       setAnswered(true);
+      if (option === currentQuestion.answer) {
+        void soundManager.playCorrectSound();
+      } else {
+        void soundManager.playWrongSound();
+      }
     }
   };
 
@@ -356,6 +363,7 @@ export function PracticeScreen({ route, navigation }: Props) {
             <View style={styles.practiceHeaderTextGroup}>
               <Text style={[styles.practiceHeaderTitle, { color: '#ffffff' }]}>{category?.title ?? 'Practice'}</Text>
             </View>
+            <MascotCharacter size="small" />
           </View>
         </View>
 
@@ -368,7 +376,7 @@ export function PracticeScreen({ route, navigation }: Props) {
           <View style={[styles.progressBar, { width: progressWidth, backgroundColor: category?.color ?? '#3b82f6' }]} />
         </View>
 
-        <ScrollView contentContainerStyle={styles.practiceScroll} showsVerticalScrollIndicator={false}>
+        <ScrollView style={styles.practiceScrollView} contentContainerStyle={styles.practiceScroll} showsVerticalScrollIndicator={false}>
           <View style={styles.questionCard}>
             <Text style={styles.questionText}>{currentQuestion.prompt}</Text>
           </View>

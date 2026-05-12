@@ -1,13 +1,14 @@
-import React from 'react';
-import { Text, View, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { styles } from '../styles';
+import React from 'react';
+import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { MascotCharacter } from '../../../components/MascotCharacter';
 import { categories } from '../constants/categories';
+import { styles } from '../styles';
 import { Props } from '../types';
 
 export function GeometryIntroScreen({ navigation }: Props) {
   const category = categories.find(cat => cat.key === 'geometry')!;
-  
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -21,6 +22,7 @@ export function GeometryIntroScreen({ navigation }: Props) {
                 {category.title}
               </Text>
             </View>
+            <MascotCharacter size="small" />
           </View>
         </View>
 
@@ -32,13 +34,13 @@ export function GeometryIntroScreen({ navigation }: Props) {
                 <View style={styles.triangle} />
                 <Text style={styles.shapeLabel}>Triangle</Text>
               </View>
-              
+
               {/* Square */}
               <View style={styles.shapeItem}>
                 <View style={[styles.square, { backgroundColor: '#10b981' }]} />
                 <Text style={styles.shapeLabel}>Square</Text>
               </View>
-              
+
               {/* Circle */}
               <View style={styles.shapeItem}>
                 <View style={[styles.circle, { backgroundColor: '#3b82f6' }]} />
@@ -47,9 +49,10 @@ export function GeometryIntroScreen({ navigation }: Props) {
             </View>
             <View style={styles.heroDivider} />
             <Text style={styles.heroDescription}>{category.description}</Text>
+
           </View>
 
-          <Text style={styles.sectionTitle}>Examples</Text>
+          <Text style={styles.sectionTitle}>Try</Text>
           <View style={styles.examplesRow}>
             {category.examples.map((example: any, idx: any) => (
               <View key={idx} style={styles.exampleCard}>
@@ -60,7 +63,7 @@ export function GeometryIntroScreen({ navigation }: Props) {
 
           <TouchableOpacity style={[styles.primaryButton, { backgroundColor: category.color }]} onPress={() => navigation.navigate('GeometryLevel')}>
             <Ionicons name="play" size={18} color="#fff" style={styles.buttonIcon} />
-            <Text style={styles.primaryButtonText}>Start Practice</Text>
+            <Text style={styles.primaryButtonText}>Play</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>

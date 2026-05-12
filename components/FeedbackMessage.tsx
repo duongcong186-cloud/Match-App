@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 
 interface FeedbackMessageProps {
@@ -9,45 +9,43 @@ interface FeedbackMessageProps {
 }
 
 export function FeedbackMessage({ isCorrect, correctAnswer, showIcon = true }: FeedbackMessageProps) {
-  const getCorrectMessage = () => {
-    const messages = [
-      'Correct!',
-      'Well done!',
-      'Great job!',
-      'Perfect!',
-      'Excellent!',
-      'Awesome!',
-      'Spot on!',
-      'Brilliant!',
-      'Outstanding!',
-      'Superb!'
-    ];
-    return messages[Math.floor(Math.random() * messages.length)];
-  };
+  const message = useMemo(() => {
+    if (isCorrect) {
+      const messages = [
+        'Correct!',
+        'Well done!',
+        'Great job!',
+        'Perfect!',
+        'Excellent!',
+        'Awesome!',
+        'Spot on!',
+        'Brilliant!',
+        'Outstanding!',
+        'Superb!',
+      ];
+      return messages[Math.floor(Math.random() * messages.length)];
+    }
 
-  const getWrongMessage = () => {
     const messages = [
-      'Not correct!',
-      'Try again!',
-      'Keep trying!',
-      'Wrong answer!',
+      'Good try!',
       'Not quite!',
-      'Incorrect!',
       'Almost there!',
-      'Try once more!',
-      'Not right!',
-      'Keep going!'
+      'Keep going!',
+      'Try the next one!',
+      'You are learning!',
+      'Nice effort!',
     ];
     return messages[Math.floor(Math.random() * messages.length)];
-  };
+  }, [isCorrect]);
 
-  const message = isCorrect ? getCorrectMessage() : getWrongMessage();
   const iconName = isCorrect ? 'checkmark-circle' : 'close-circle';
   const iconColor = isCorrect ? '#10b981' : '#ef4444';
   const textColor = isCorrect ? '#10b981' : '#ef4444';
+  const backgroundColor = isCorrect ? '#ecfdf5' : '#fef2f2';
+  const borderColor = isCorrect ? '#bbf7d0' : '#fecaca';
 
   return (
-    <View style={feedbackStyles.container}>
+    <View style={[feedbackStyles.container, { backgroundColor, borderColor }]}>
       {showIcon && (
         <View style={[feedbackStyles.iconContainer, { backgroundColor: iconColor }]}>
           <Ionicons 
@@ -63,7 +61,7 @@ export function FeedbackMessage({ isCorrect, correctAnswer, showIcon = true }: F
         </Text>
         {!isCorrect && correctAnswer !== undefined && (
           <Text style={[feedbackStyles.correctAnswerText, { color: textColor }]}>
-            Correct answer is: {correctAnswer}
+            Correct answer: {correctAnswer}
           </Text>
         )}
       </View>
@@ -84,7 +82,7 @@ const feedbackStyles = StyleSheet.create({
     marginHorizontal: isCompactWidth ? 0 : 8,
     marginBottom: 16,
     borderRadius: 16,
-    backgroundColor: '#ffffff',
+    borderWidth: 1,
     shadowColor: '#000',
     shadowOpacity: 0.08,
     shadowRadius: 12,

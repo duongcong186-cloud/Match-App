@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FeedbackMessage from '../../../components/FeedbackMessage';
 import GameTimer from '../../../components/GameTimer';
-import QuestionSpeechButton from '../../../components/QuestionSpeechButton';
+import { MascotCharacter } from '../../../components/MascotCharacter';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
@@ -124,6 +124,7 @@ export function MultiplicationPracticeScreen({ route, navigation }: Props) {
           <View style={styles.practiceHeaderTextGroup}>
             <Text style={[styles.practiceHeaderTitle, { color: '#ffffff' }]}>{category.title}</Text>
           </View>
+          <MascotCharacter size="small" />
         </View>
       </View>
 
@@ -142,16 +143,10 @@ export function MultiplicationPracticeScreen({ route, navigation }: Props) {
         <View style={[styles.progressBar, { width: progressWidth, backgroundColor: category.color }]} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.practiceScroll} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.practiceScrollView} contentContainerStyle={styles.practiceScroll} showsVerticalScrollIndicator={false}>
         <View style={styles.questionCard}>
           <Text style={styles.questionText}>{currentQuestion.prompt}</Text>
         </View>
-        <QuestionSpeechButton
-          prompt={currentQuestion.prompt}
-          options={currentQuestion.options}
-          accentColor={category.color}
-          autoPlayKey={currentIndex}
-        />
 
         <View style={styles.optionsContainer}>
           {currentQuestion.options.map((option, idx) => {

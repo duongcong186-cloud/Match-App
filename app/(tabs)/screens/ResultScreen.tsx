@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { styles } from '../styles';
 import { categories } from '../constants/categories';
 import { Props } from '../types';
+import { MascotCharacter } from '../../../components/MascotCharacter';
 
 interface ResultParams {
   categoryKey: string;
@@ -49,6 +50,7 @@ export function ResultScreen({ route, navigation }: Props) {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={[styles.levelDetailScroll, styles.fullScreenScroll]} showsVerticalScrollIndicator={false}>
         <View style={styles.resultCard}>
+          <MascotCharacter size="medium" style={styles.resultMascot} />
           <Text style={styles.resultTitle}>{title}</Text>
           <Text style={styles.resultSubtitle}>{subtitle}</Text>
 
@@ -57,41 +59,49 @@ export function ResultScreen({ route, navigation }: Props) {
             <Text style={styles.resultBadgeText}>{trophy ? 'Small Trophy' : 'Keep Trying'}</Text>
           </View>
 
-          <View style={styles.resultSummary}>
-            <Text style={styles.resultSummaryText}>Topic</Text>
-            <Text style={styles.resultSummaryValue}>{category?.title ?? 'Math'}</Text>
-          </View>
-          <View style={styles.resultSummary}>
-            <Text style={styles.resultSummaryText}>Level</Text>
-            <Text style={styles.resultSummaryValue}>{params.level}</Text>
-          </View>
-          <View style={styles.resultSummary}>
-            <Text style={styles.resultSummaryText}>Score</Text>
-            <Text style={styles.resultSummaryValue}>{params.score}/10</Text>
-          </View>
-          <View style={styles.resultSummary}>
-            <Text style={styles.resultSummaryText}>Time</Text>
-            <Text style={styles.resultSummaryValue}>{params.duration}s</Text>
+          <View style={styles.resultSummaryPanel}>
+            <View style={styles.resultSummary}>
+              <Text style={styles.resultSummaryText}>Topic</Text>
+              <Text style={styles.resultSummaryValue}>{category?.title ?? 'Math'}</Text>
+            </View>
+            <View style={styles.resultSummary}>
+              <Text style={styles.resultSummaryText}>Level</Text>
+              <Text style={styles.resultSummaryValue}>{params.level}</Text>
+            </View>
+            <View style={styles.resultSummary}>
+              <Text style={styles.resultSummaryText}>Score</Text>
+              <Text style={styles.resultSummaryValue}>{params.score}/10</Text>
+            </View>
+            <View style={[styles.resultSummary, styles.resultSummaryLast]}>
+              <Text style={styles.resultSummaryText}>Time</Text>
+              <Text style={styles.resultSummaryValue}>{params.duration}s</Text>
+            </View>
           </View>
 
           <TouchableOpacity
             style={[styles.primaryButton, { backgroundColor: category?.color ?? '#3b82f6' }]}
+            activeOpacity={0.86}
             onPress={() => navigation.navigate(practiceScreenMap[params.categoryKey], { level: params.level, categoryKey: params.categoryKey })}
           >
+            <Ionicons name="refresh" size={19} color="#ffffff" style={styles.buttonIcon} />
             <Text style={styles.primaryButtonText}>Retry</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.secondaryButton}
+            activeOpacity={0.86}
             onPress={() => navigation.navigate(levelScreenMap[params.categoryKey])}
           >
+            <Ionicons name="grid-outline" size={18} color="#111827" style={styles.buttonIcon} />
             <Text style={styles.secondaryButtonText}>Choose another level</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.secondaryButton}
+            activeOpacity={0.86}
             onPress={() => navigation.navigate('HomeMain')}
           >
+            <Ionicons name="home-outline" size={18} color="#111827" style={styles.buttonIcon} />
             <Text style={styles.secondaryButtonText}>Back to Home</Text>
           </TouchableOpacity>
         </View>

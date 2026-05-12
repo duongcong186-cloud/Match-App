@@ -1,8 +1,21 @@
+import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
+import * as Haptics from 'expo-haptics';
 import * as Speech from 'expo-speech';
 import { Platform } from 'react-native';
 
+type SoundType = 'correct' | 'wrong' | 'transition';
+type NativeSoundType = Exclude<SoundType, 'transition'>;
+
+const soundFiles = {
+  correct: require('../../../assets/correct.wav'),
+  wrong: require('../../../assets/wrong.wav'),
+  transition: null,
+};
+
 export class SoundManager {
   private static instance: SoundManager;
+  private audioModeReady = false;
+  private players: Partial<Record<NativeSoundType, AudioPlayer>> = {};
 
   static getInstance(): SoundManager {
     if (!SoundManager.instance) {
@@ -98,32 +111,28 @@ export class SoundManager {
     }
   }
 
-  private playSystemSound(type: 'correct' | 'wrong' | 'transition') {
+  private playSystemSound(type: SoundType) {
     // For React Native, use both system sound and haptics for better feedback
     if (Platform.OS !== 'web') {
       try {
-        // Import dynamically to avoid issues
-        const { Haptics } = require('expo-haptics');
-        const { Audio } = require('expo-av');
-        
         switch (type) {
           case 'correct':
             // Play success sound
-            this.playAudioFile('correct');
+            void this.playAudioFile('correct');
             // Add haptic feedback
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             break;
           case 'wrong':
             // Play wrong sound
-            this.playAudioFile('wrong');
+            void this.playAudioFile('wrong');
             // Add haptic feedback
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
             break;
           case 'transition':
             // Play transition sound
-            this.playAudioFile('transition');
+            void this.playAudioFile('transition');
             // Add haptic feedback
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             break;
         }
       } catch (error) {
@@ -132,33 +141,45 @@ export class SoundManager {
     }
   }
 
-  private async playAudioFile(type: 'correct' | 'wrong' | 'transition') {
+  private async playAudioFile(type: SoundType) {
     try {
-      const { Audio } = require('expo-av');
-      
-      // Define sound files with correct paths
-      const soundFiles = {
-        correct: require('../../assets/correct.mp3.ogg'),
-        wrong: require('../../assets/wrong.mp3.mp3'),
-        transition: null // No transition file available, use haptics only
-      };
-      
-      // Only play if sound file exists
-      if (soundFiles[type]) {
-        const { sound } = await Audio.Sound.createAsync(soundFiles[type]);
-        
-        await sound.playAsync();
-        
-        // Clean up the sound
-        sound.setOnPlaybackStatusUpdate(async (status: any) => {
-          if (status.didJustFinish) {
-            await sound.unloadAsync();
-          }
-        });
+      if (type === 'transition') {
+        return;
       }
+
+      await this.ensureAudioMode();
+
+      const player = this.getPlayer(type);
+      player.pause();
+      await player.seekTo(0).catch(() => undefined);
+      player.play();
     } catch (error) {
       console.log('Error playing audio file:', error);
     }
+  }
+
+  private async ensureAudioMode() {
+    if (this.audioModeReady) {
+      return;
+    }
+
+    await setAudioModeAsync({
+      playsInSilentMode: true,
+      interruptionMode: 'mixWithOthers',
+    });
+    this.audioModeReady = true;
+  }
+
+  private getPlayer(type: NativeSoundType) {
+    if (!this.players[type]) {
+      this.players[type] = createAudioPlayer(soundFiles[type], {
+        downloadFirst: true,
+        keepAudioSessionActive: true,
+      });
+      this.players[type].volume = 0.85;
+    }
+
+    return this.players[type];
   }
 }
 

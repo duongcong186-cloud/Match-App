@@ -2,25 +2,22 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { MascotCharacter } from '../../../components/MascotCharacter';
 import { styles } from '../styles';
 import { Props } from '../types';
 
-const characterName = 'Minh Khôi';
+const characterName = 'Minh Khoi';
 
 const welcomeLines = [
-  'Let us learn math together.',
-  'Ready for fun math challenges?',
-  'Pick a topic and learn one step at a time.',
-  'Numbers, shapes, and puzzles are waiting.',
-  'Practice with Minh Khôi and build your confidence.',
+  'Ready for a math game?',
+  'Solve, score, and level up.',
+  'Numbers and puzzles are waiting.',
 ];
 
 export function WelcomeScreen({ navigation }: Props) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(24)).current;
   const scaleAnim = useRef(new Animated.Value(0.94)).current;
-  const jumpAnim = useRef(new Animated.Value(0)).current;
-  const armAnim = useRef(new Animated.Value(0)).current;
 
   const welcomeLine = useMemo(
     () => welcomeLines[Math.floor(Math.random() * welcomeLines.length)],
@@ -49,37 +46,6 @@ export function WelcomeScreen({ navigation }: Props) {
       }),
     ]).start();
 
-    Animated.loop(
-      Animated.sequence([
-        Animated.parallel([
-          Animated.timing(jumpAnim, {
-            toValue: -12,
-            duration: 340,
-            useNativeDriver: true,
-          }),
-          Animated.timing(armAnim, {
-            toValue: 1,
-            duration: 340,
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.parallel([
-          Animated.spring(jumpAnim, {
-            toValue: 0,
-            friction: 4,
-            tension: 95,
-            useNativeDriver: true,
-          }),
-          Animated.timing(armAnim, {
-            toValue: 0,
-            duration: 260,
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.delay(520),
-      ]),
-    ).start();
-
     const speechTimeout = setTimeout(() => {
       Speech.stop();
       Speech.speak(spokenText, {
@@ -93,7 +59,7 @@ export function WelcomeScreen({ navigation }: Props) {
       clearTimeout(speechTimeout);
       Speech.stop();
     };
-  }, [armAnim, fadeAnim, jumpAnim, scaleAnim, slideAnim, spokenText]);
+  }, [fadeAnim, scaleAnim, slideAnim, spokenText]);
 
   const handleNext = () => {
     Speech.stop();
@@ -113,15 +79,6 @@ export function WelcomeScreen({ navigation }: Props) {
     });
   };
 
-  const leftArmRotate = armAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['-18deg', '-44deg'],
-  });
-  const rightArmRotate = armAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['18deg', '44deg'],
-  });
-
   return (
     <SafeAreaView style={styles.welcomeSafeArea}>
       <Animated.View
@@ -133,43 +90,10 @@ export function WelcomeScreen({ navigation }: Props) {
           },
         ]}
       >
-        <Animated.View style={[styles.welcomeCharacter, { transform: [{ translateY: jumpAnim }] }]}>
-          <View style={styles.welcomeHair} />
-          <View style={styles.welcomeFace}>
-            <View style={styles.welcomeBoyHairLine} />
-            <View style={styles.welcomeEyeRow}>
-              <View style={styles.welcomeEye} />
-              <View style={styles.welcomeEye} />
-            </View>
-            <View style={styles.welcomeSmile} />
-          </View>
-          <View style={styles.welcomeNeck} />
-          <View style={styles.welcomeBody}>
-            <Animated.View
-              style={[
-                styles.welcomeArm,
-                styles.welcomeLeftArm,
-                { transform: [{ rotate: leftArmRotate }] },
-              ]}
-            />
-            <View style={styles.welcomeShirt}>
-              <Text style={styles.welcomeShirtText}>M</Text>
-            </View>
-            <Animated.View
-              style={[
-                styles.welcomeArm,
-                styles.welcomeRightArm,
-                { transform: [{ rotate: rightArmRotate }] },
-              ]}
-            />
-          </View>
-          <View style={styles.welcomeBadge}>
-            <Ionicons name="calculator" size={22} color="#ffffff" />
-          </View>
-        </Animated.View>
+        <MascotCharacter size="large" style={styles.welcomeMascot} />
 
-        <Text style={styles.welcomeEyebrow}>Learn math together</Text>
-        <Text style={styles.welcomeTitle}>Learn with {characterName}</Text>
+        <Text style={styles.welcomeEyebrow}>Math Quest</Text>
+        <Text style={styles.welcomeTitle}>Play with {characterName}</Text>
         <Text style={styles.welcomeSubtitle}>{welcomeLine}</Text>
 
         <View style={styles.welcomeMiniGrid}>
@@ -185,7 +109,7 @@ export function WelcomeScreen({ navigation }: Props) {
         </View>
 
         <TouchableOpacity style={styles.welcomeNextButton} activeOpacity={0.85} onPress={handleNext}>
-          <Text style={styles.welcomeNextText}>Next</Text>
+          <Text style={styles.welcomeNextText}>Start</Text>
           <Ionicons name="arrow-forward" size={20} color="#ffffff" />
         </TouchableOpacity>
       </Animated.View>

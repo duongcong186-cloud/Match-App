@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { MascotCharacter } from './MascotCharacter';
 import { styles } from '../app/(tabs)/styles';
 import { Category } from '../app/(tabs)/types';
 
@@ -20,7 +21,6 @@ export function LevelSelector({
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {/* Header with back button and title */}
         <View style={[styles.practiceHeader, { backgroundColor: category.color }]}>
           <View style={styles.practiceHeaderRow}>
             <TouchableOpacity
@@ -32,21 +32,23 @@ export function LevelSelector({
             <View style={styles.practiceHeaderTextGroup}>
               <Text style={styles.practiceHeaderTitle}>{category.title}</Text>
             </View>
+            <MascotCharacter size="small" />
           </View>
         </View>
 
-        {/* Levels Grid */}
         <ScrollView contentContainerStyle={styles.levelGridScroll} showsVerticalScrollIndicator={false}>
           <View style={styles.levelGridCard}>
-            <Text style={styles.levelGridSelectTitle}>Select a Level</Text>
-            
-            {/* Levels Grid Layout */}
+            <View style={styles.levelGridPromptRow}>
+              <Text style={styles.levelGridSelectTitle}>Pick Level</Text>
+              <Ionicons name="sparkles" size={20} color={category.color} />
+            </View>
+
             <View style={styles.levelGridContainer}>
               {Array.from({ length: 10 }).map((_, index) => (
                 <TouchableOpacity
                   key={index + 1}
-                  style={styles.levelGridItem}
-                  activeOpacity={0.7}
+                  style={[styles.levelGridItem, { borderColor: category.color }]}
+                  activeOpacity={0.84}
                   onPress={() =>
                     navigation.navigate(practiceRouteName, { 
                       level: index + 1,
@@ -57,7 +59,6 @@ export function LevelSelector({
                   <View style={[styles.levelGridCircle, { backgroundColor: category.color }]}>
                     <Text style={styles.levelGridNumber}>{index + 1}</Text>
                   </View>
-                  <Text style={styles.levelGridLabel}>Level {index + 1}</Text>
                   <View style={styles.levelGridStars}>
                     {Array.from({ length: 4 }).map((_, starIdx) => (
                       <Ionicons
@@ -71,8 +72,7 @@ export function LevelSelector({
                 </TouchableOpacity>
               ))}
             </View>
-
-                      </View>
+          </View>
         </ScrollView>
       </View>
     </SafeAreaView>

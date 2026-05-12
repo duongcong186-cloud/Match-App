@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { MascotCharacter } from '../../../components/MascotCharacter';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
@@ -12,7 +13,7 @@ export function SudokuIntroScreen({ navigation }: Props) {
     ['4', '1', '2'],
     ['3', '4', '1'],
   ];
-  
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -26,6 +27,7 @@ export function SudokuIntroScreen({ navigation }: Props) {
                 {category.title}
               </Text>
             </View>
+            <MascotCharacter size="small" />
           </View>
         </View>
 
@@ -44,9 +46,10 @@ export function SudokuIntroScreen({ navigation }: Props) {
             </View>
             <View style={styles.heroDivider} />
             <Text style={styles.heroDescription}>{category.description}</Text>
+
           </View>
 
-          <Text style={styles.sectionTitle}>Examples</Text>
+          <Text style={styles.sectionTitle}>Try</Text>
           <View style={styles.examplesRow}>
             {category.examples.map((example: any, idx: any) => (
               <View key={idx} style={styles.exampleCard}>
@@ -57,7 +60,7 @@ export function SudokuIntroScreen({ navigation }: Props) {
 
           <TouchableOpacity style={[styles.primaryButton, { backgroundColor: category.color }]} onPress={() => navigation.navigate('SudokuLevel')}>
             <Ionicons name="play" size={18} color="#fff" style={styles.buttonIcon} />
-            <Text style={styles.primaryButtonText}>Start Practice</Text>
+            <Text style={styles.primaryButtonText}>Play</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>

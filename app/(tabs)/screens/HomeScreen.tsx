@@ -1,8 +1,9 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { styles } from '../styles';
+import React from 'react';
+import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { MascotCharacter } from '../../../components/MascotCharacter';
 import { categories } from '../constants/categories';
+import { styles } from '../styles';
 import { Props } from '../types';
 
 export function HomeScreen({ navigation }: Props) {
@@ -10,13 +11,14 @@ export function HomeScreen({ navigation }: Props) {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.topBar}>
-          <View>
-            <Text style={styles.appTitle}>Math Practice</Text>
-            <Text style={styles.pageSubtitle}>Choose a topic to start</Text>
+          <View style={styles.topBarTitleGroup}>
+            <Text style={styles.appTitle}>Math Quest</Text>
           </View>
-          <TouchableOpacity style={styles.settingsButton} activeOpacity={0.7} onPress={() => navigation.navigate('Rankings')}>
-            <Ionicons name="trophy-outline" size={24} color="#1f2937" />
-          </TouchableOpacity>
+          <View style={styles.topBarActions}>
+            <TouchableOpacity style={styles.settingsButton} activeOpacity={0.7} onPress={() => navigation.navigate('Rankings')}>
+              <Ionicons name="trophy-outline" size={24} color="#1f2937" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* <View style={styles.pointsCard}>
@@ -28,23 +30,44 @@ export function HomeScreen({ navigation }: Props) {
         </View> */}
 
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-          {categories.map((cat, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.topicCard, { backgroundColor: cat.color }]}
-              activeOpacity={0.8}
-              onPress={() => navigation.navigate(cat.screen)}
-            >
-              <View style={styles.cardIconWrapper}>
-                <Ionicons name={cat.icon as any} size={24} color="#fff" />
+          <View style={styles.homeHero}>
+            <View style={styles.homeHeroTextGroup}>
+              <Text style={styles.homeHeroEyebrow}>Ready?</Text>
+              <Text style={styles.homeHeroTitle}>Choose a quest</Text>
+              <View style={styles.homeBubbleRow}>
+                <View style={[styles.homeBubble, { backgroundColor: '#dbeafe' }]}>
+                  <Text style={[styles.homeBubbleText, { color: '#1d4ed8' }]}>1+2</Text>
+                </View>
+                <View style={[styles.homeBubble, { backgroundColor: '#dcfce7' }]}>
+                  <Text style={[styles.homeBubbleText, { color: '#15803d' }]}>x4</Text>
+                </View>
+                <View style={[styles.homeBubble, { backgroundColor: '#fef3c7' }]}>
+                  <Text style={[styles.homeBubbleText, { color: '#b45309' }]}>?</Text>
+                </View>
               </View>
-              <View style={styles.cardTextGroup}>
-                <Text style={styles.cardTitle}>{cat.title}</Text>
-                <Text style={styles.cardSubtitle}>{cat.subtitle}</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={24} color="rgba(255,255,255,0.95)" />
-            </TouchableOpacity>
-          ))}
+            </View>
+            <MascotCharacter size="medium" style={styles.homeHeroMascot} />
+          </View>
+
+          <View style={styles.homeTopicGrid}>
+            {categories.map((cat, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[styles.topicCard, { backgroundColor: cat.color }]}
+                activeOpacity={0.86}
+                onPress={() => navigation.navigate(cat.screen)}
+              >
+                <View style={styles.cardIconWrapper}>
+                  <Ionicons name={cat.icon as any} size={24} color="#fff" />
+                </View>
+                <View style={styles.cardTextGroup}>
+                  <Text style={styles.cardTitle} numberOfLines={2}>
+                    {cat.title}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
         </ScrollView>
       </View>
     </SafeAreaView>
