@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
+import * as WebBrowser from 'expo-web-browser';
 import React, { useState } from 'react';
-import { Image, Modal, Platform, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { WebView } from 'react-native-webview';
+import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { MascotCharacter } from '../../../components/MascotCharacter';
 import { categories } from '../constants/categories';
@@ -50,21 +50,23 @@ const videoList: VideoLesson[] = [
 const getYouTubeThumbnail = (videoId: string) => `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
 const getEmbedUrl = (videoId: string) =>
-  `https://www.youtube-nocookie.com/embed/${videoId}?playsinline=1&controls=1&rel=0&modestbranding=1&fs=1`;
+  `https://www.youtube.com/embed/${videoId}?playsinline=1&controls=1&rel=0&modestbranding=1&fs=1&origin=https%3A%2F%2Fwww.youtube.com`;
 
 export function VideoLessonsLevelScreen({ navigation }: Props) {
   const category = categories.find(cat => cat.key === 'video')!;
-  const [selectedVideo, setSelectedVideo] = useState<VideoLesson | null>(null);
+  const [openingVideoId, setOpeningVideoId] = useState<number | null>(null);
 
-  const openVideo = (video: VideoLesson) => {
-    setSelectedVideo(video);
+  const openVideo = async (video: VideoLesson) => {
+    setOpeningVideoId(video.id);
+    try {
+      await WebBrowser.openBrowserAsync(getEmbedUrl(video.videoId), {
+        controlsColor: category.color,
+        presentationStyle: WebBrowser.WebBrowserPresentationStyle.FULL_SCREEN,
+      });
+    } finally {
+      setOpeningVideoId(null);
+    }
   };
-
-  const closeVideoModal = () => {
-    setSelectedVideo(null);
-  };
-
-  const videoUrl = selectedVideo ? getEmbedUrl(selectedVideo.videoId) : undefined;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -93,6 +95,7 @@ export function VideoLessonsLevelScreen({ navigation }: Props) {
               style={[styles.videoCard, { borderColor: category.color }]}
               activeOpacity={0.86}
               onPress={() => openVideo(video)}
+              disabled={openingVideoId === video.id}
             >
               <View style={styles.videoThumbnailFrame}>
                 <Image
@@ -106,7 +109,9 @@ export function VideoLessonsLevelScreen({ navigation }: Props) {
                   </View>
                 </View>
                 <View style={styles.videoLessonPill}>
-                  <Text style={styles.videoLessonPillText}>{video.id}</Text>
+                  <Text style={styles.videoLessonPillText}>
+                    {openingVideoId === video.id ? '...' : video.id}
+                  </Text>
                 </View>
               </View>
 
@@ -126,82 +131,6 @@ export function VideoLessonsLevelScreen({ navigation }: Props) {
           ))}
         </ScrollView>
       </View>
-
-      <Modal
-        visible={selectedVideo !== null}
-        animationType="slide"
-        presentationStyle="fullScreen"
-        onRequestClose={closeVideoModal}
-      >
-        <SafeAreaView style={styles.videoModalSafeArea}>
-          <View style={styles.videoModalHeader}>
-            <TouchableOpacity style={styles.videoModalBackButton} activeOpacity={0.75} onPress={closeVideoModal}>
-              <Ionicons name="chevron-back" size={28} color="#ffffff" />
-            </TouchableOpacity>
-            <Text numberOfLines={1} style={styles.videoModalTitle}>
-              {selectedVideo?.title ?? 'Video Lesson'}
-            </Text>
-            <View style={styles.videoModeButton} />
-          </View>
-
-          {videoUrl && (
-            <WebView
-              source={{ uri: videoUrl }}
-              style={styles.videoWebView}
-              originWhitelist={['https://*', 'http://*']}
-              allowsFullscreenVideo
-              javaScriptEnabled
-              domStorageEnabled
-              startInLoadingState
-              allowsInlineMediaPlayback
-              allowsAirPlayForMediaPlayback
-              allowsPictureInPictureMediaPlayback
-              setSupportMultipleWindows={false}
-              mediaPlaybackRequiresUserAction={Platform.OS === 'ios'}
-              mixedContentMode="compatibility"
-              userAgent={
-                Platform.OS === 'ios'
-                  ? 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1'
-                  : undefined
-              }
-              onShouldStartLoadWithRequest={request => {
-                if (
-                  request.url.startsWith('youtube://') ||
-                  request.url.startsWith('vnd.youtube') ||
-                  request.url.startsWith('intent://')
-                ) {
-                  return false;
-                }
-
-                return (
-                  request.url.startsWith('about:blank') ||
-                  request.url.startsWith('https://www.youtube-nocookie.com/embed/') ||
-                  request.url.startsWith('https://www.youtube.com/embed/')
-                );
-              }}
-              renderLoading={() => (
-                <View style={styles.videoLoadingContainer}>
-                  <Text style={styles.videoLoadingText}>Loading video...</Text>
-                </View>
-              )}
-              renderError={(errorName, errorCode) => (
-                <View style={styles.videoErrorContainer}>
-                  <Text style={styles.videoErrorText}>
-                    Error loading video: {errorName} ({errorCode})
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.videoRetryButton}
-                    activeOpacity={0.8}
-                    onPress={() => selectedVideo && setSelectedVideo({ ...selectedVideo })}
-                  >
-                    <Text style={styles.videoRetryButtonText}>Retry</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            />
-          )}
-        </SafeAreaView>
-      </Modal>
     </SafeAreaView>
   );
 }

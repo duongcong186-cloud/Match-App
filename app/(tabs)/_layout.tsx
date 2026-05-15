@@ -8,6 +8,55 @@ import { HapticTab } from '@/components/haptic-tab';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
+const hiddenTabRoutes = [
+  'components',
+  'components/GameTimer',
+  'components/index',
+  'constants/categories',
+  'screens',
+  'screens/index',
+  'screens/AdditionIntroScreen',
+  'screens/AdditionLevelScreen',
+  'screens/AdditionPracticeScreen',
+  'screens/ComparisonIntroScreen',
+  'screens/ComparisonLevelScreen',
+  'screens/ComparisonPracticeScreen',
+  'screens/CountingIntroScreen',
+  'screens/CountingLevelScreen',
+  'screens/CountingPracticeScreen',
+  'screens/GeometryIntroScreen',
+  'screens/GeometryLevelScreen',
+  'screens/GeometryPracticeScreen',
+  'screens/HomeScreen',
+  'screens/MultiplicationIntroScreen',
+  'screens/MultiplicationLevelScreen',
+  'screens/MultiplicationPracticeScreen',
+  'screens/OrderingIntroScreen',
+  'screens/OrderingLevelScreen',
+  'screens/OrderingPracticeScreen',
+  'screens/PracticeScreen',
+  'screens/RankingsScreen',
+  'screens/ResultScreen',
+  'screens/SudokuIntroScreen',
+  'screens/SudokuLevelScreen',
+  'screens/SudokuPracticeScreen',
+  'screens/VideoLessonsIntroScreen',
+  'screens/VideoLessonsLevelScreen',
+  'screens/WelcomeScreen',
+  'screens/WordProblemsIntroScreen',
+  'screens/WordProblemsLevelScreen',
+  'screens/WordProblemsPracticeScreen',
+  'styles',
+  'styles/index',
+  'types',
+  'types/index',
+  'utils/applyTimerToAllScreens',
+  'utils/batchUpdatePracticeScreens',
+  'utils/sounds',
+  'utils/storage',
+  'utils/updateAllPracticeScreens',
+];
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
@@ -92,6 +141,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      {hiddenTabRoutes.map(routeName => (
+        <Tabs.Screen
+          key={routeName}
+          name={routeName}
+          options={{
+            href: null,
+          }}
+        />
+      ))}
     </Tabs>
   );
 }

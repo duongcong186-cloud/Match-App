@@ -74,9 +74,8 @@ const isCompactWidth = width < 380;
 
 const feedbackStyles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: isCompactWidth ? 12 : 16,
     paddingHorizontal: isCompactWidth ? 14 : 20,
     marginHorizontal: isCompactWidth ? 0 : 8,
@@ -95,22 +94,25 @@ const feedbackStyles = StyleSheet.create({
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginBottom: 8,
   },
   textContainer: {
-    flex: 1,
+    alignItems: 'center',
+    alignSelf: 'stretch',
   },
   messageText: {
     fontSize: 16,
     fontWeight: '600',
     lineHeight: 24,
     marginBottom: 4,
+    textAlign: 'center',
   },
   correctAnswerText: {
     fontSize: 14,
     fontWeight: '500',
     lineHeight: 20,
     opacity: 0.8,
+    textAlign: 'center',
   },
 });
 

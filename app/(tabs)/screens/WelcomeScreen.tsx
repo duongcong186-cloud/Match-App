@@ -51,7 +51,7 @@ export function WelcomeScreen({ navigation }: Props) {
       Speech.speak(spokenText, {
         language: 'en-US',
         pitch: 1.04,
-        rate: 0.88,
+        rate: 0.75,
       });
     }, 350);
 

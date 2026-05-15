@@ -43,7 +43,7 @@ export function QuestionSpeechButton({
     Speech.speak(`Question. ${readableMathText(prompt)}. Answers. ${answerText}`, {
       language: 'en-US',
       pitch: 1,
-      rate: 0.88,
+      rate: 0.68,
     });
   }, [options, prompt]);
 
