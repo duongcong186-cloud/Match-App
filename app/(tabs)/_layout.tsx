@@ -58,7 +58,8 @@ export default function TabLayout() {
           shadowOpacity: Platform.OS === 'ios' ? 0.1 : 0,
           shadowRadius: Platform.OS === 'ios' ? 4 : 0,
         },
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -69,7 +70,7 @@ export default function TabLayout() {
               size={24}
               name={focused ? 'home' : 'home-outline'}
               color={color}
-              accessible={true}
+              accessible
               accessibilityLabel="Home icon"
             />
           ),
@@ -78,15 +79,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Rankings',
-          tabBarAccessibilityLabel: 'Rankings tab',
+          title: 'Ranking',
+          tabBarAccessibilityLabel: 'Ranking tab',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               size={24}
               name={focused ? 'trophy' : 'trophy-outline'}
               color={color}
-              accessible={true}
-              accessibilityLabel="Rankings icon"
+              accessible
+              accessibilityLabel="Ranking icon"
             />
           ),
         }}

@@ -4,6 +4,7 @@ import { Animated, Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity,
 import FeedbackMessage from '../../../components/FeedbackMessage';
 import GameTimer from '../../../components/GameTimer';
 import { MascotCharacter } from '../../../components/MascotCharacter';
+import QuestionSpeechButton from '../../../components/QuestionSpeechButton';
 import { categories } from '../constants/categories';
 import { styles } from '../styles';
 import { Props } from '../types';
@@ -223,6 +224,12 @@ export function OrderingPracticeScreen({ route, navigation }: Props) {
         <Animated.View style={[styles.questionCard, { opacity: fadeAnim }]}>
           <Text style={styles.questionText}>{currentQuestion.prompt}</Text>
         </Animated.View>
+        <QuestionSpeechButton
+          prompt={currentQuestion.prompt}
+          options={currentQuestion.options}
+          accentColor={category.color}
+          autoPlayKey={currentIndex}
+        />
 
         <View style={styles.optionsContainer}>
           {currentQuestion.options.map((option, idx) => {

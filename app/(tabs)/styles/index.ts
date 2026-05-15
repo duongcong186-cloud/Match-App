@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
   welcomeMiniText: { fontSize: 17, fontWeight: '900' },
   welcomeNextButton: { minWidth: 168, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: '#2563eb', borderRadius: 18, paddingVertical: 14, paddingHorizontal: 24, shadowColor: '#1d4ed8', shadowOpacity: 0.22, shadowRadius: 14, shadowOffset: { width: 0, height: 8 }, elevation: 6 },
   welcomeNextText: { color: '#ffffff', fontSize: 16, fontWeight: '800' },
-  topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: pagePadding, marginTop: isCompactWidth ? 4 : 8, marginBottom: isCompactWidth ? 4 : 6 },
+  topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: pagePadding, marginTop: isCompactWidth ? 12 : 16, marginBottom: isCompactWidth ? 4 : 6 },
   topBarTitleGroup: { flex: 1, paddingRight: 10 },
   topBarActions: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   appTitle: { fontSize: isCompactWidth ? 23 : 26, fontWeight: '800', color: '#111827' },
@@ -70,7 +70,7 @@ export const styles = StyleSheet.create({
   levelButton: { backgroundColor: '#10b981', margin: 4, padding: 12, borderRadius: 10, alignItems: 'center', width: 60 },
   levelText: { color: '#ffffff', fontSize: 16, fontWeight: '700' },
   starRow: { flexDirection: 'row', marginTop: 6 },
-  introHeader: { position: 'relative', borderRadius: cardRadius, marginHorizontal: pagePadding, padding: 8, paddingBottom: 8, marginBottom: 6, minHeight: 44, justifyContent: 'center', marginTop: isCompactWidth ? 4 : 8 },
+  introHeader: { position: 'relative', borderRadius: cardRadius, marginHorizontal: pagePadding, padding: 8, paddingBottom: 8, marginBottom: 6, minHeight: 44, justifyContent: 'center', marginTop: isCompactWidth ? 12 : 16 },
   headerBack: { position: 'absolute', left: 16, top: 18, width: 36, height: 36, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.2)', justifyContent: 'center', alignItems: 'center' },
   headerBackInline: { width: 34, height: 34, borderRadius: 11, backgroundColor: 'rgba(255,255,255,0.2)', justifyContent: 'center', alignItems: 'center' },
   introTitle: { color: '#ffffff', fontSize: isCompactWidth ? 17 : 19, fontWeight: '800', marginBottom: 0, flexShrink: 1 },
@@ -183,7 +183,7 @@ export const styles = StyleSheet.create({
   videoRetryButtonText: { color: '#111827', fontSize: 14, fontWeight: '800' },
   
   // Level Selector
-  levelHeader: { borderRadius: cardRadius, marginHorizontal: pagePadding, padding: 12, paddingBottom: 12, marginBottom: 10, flexDirection: 'row', alignItems: 'flex-start', marginTop: isCompactWidth ? 4 : 8 },
+  levelHeader: { borderRadius: cardRadius, marginHorizontal: pagePadding, padding: 12, paddingBottom: 12, marginBottom: 10, flexDirection: 'row', alignItems: 'flex-start', marginTop: isCompactWidth ? 12 : 16 },
   headerTitleGroup: { flex: 1, marginLeft: 16 },
   levelSelectorTitle: { color: '#ffffff', fontSize: 24, fontWeight: '800', marginBottom: 4 },
   levelSelectorSubtitle: { color: 'rgba(255,255,255,0.9)', fontSize: 14, lineHeight: 20 },
@@ -203,7 +203,7 @@ export const styles = StyleSheet.create({
   
   // Level Detail Screen
   levelDetailCard: { backgroundColor: '#ffffff', borderRadius: 28, width: '100%', marginBottom: 0, overflow: 'visible', alignSelf: 'stretch', marginHorizontal: 20 },
-  levelDetailHeader: { position: 'relative', borderRadius: cardRadius, marginHorizontal: pagePadding, paddingTop: 14, padding: 12, paddingBottom: 12, marginBottom: 10, minHeight: 48, marginTop: isCompactWidth ? 4 : 8 },
+  levelDetailHeader: { position: 'relative', borderRadius: cardRadius, marginHorizontal: pagePadding, paddingTop: 14, padding: 12, paddingBottom: 12, marginBottom: 10, minHeight: 48, marginTop: isCompactWidth ? 12 : 16 },
   levelDetailHeaderRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' },
   levelDetailHeaderBack: { width: 36, height: 36, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 12, marginRight: 12 },
   headerContentGroup: { flex: 1, flexDirection: 'row', alignItems: 'center', marginLeft: 60 },
@@ -234,7 +234,7 @@ export const styles = StyleSheet.create({
   hardestLabel: { fontSize: 12, color: '#dc2626', fontWeight: '700' },
 
   // Level Grid Screen (New Layout)
-  levelGridHeader: { position: 'relative', borderRadius: cardRadius, marginHorizontal: pagePadding, paddingTop: 12, padding: 8, paddingBottom: 8, marginBottom: 6, minHeight: 44, marginTop: isCompactWidth ? 4 : 8 },
+  levelGridHeader: { position: 'relative', borderRadius: cardRadius, marginHorizontal: pagePadding, paddingTop: 12, padding: 8, paddingBottom: 8, marginBottom: 6, minHeight: 44, marginTop: isCompactWidth ? 12 : 16 },
   levelGridHeaderRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' },
   levelGridHeaderBack: { width: 36, height: 36, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 12, marginRight: 12 },
   levelGridHeaderContent: { flex: 1, flexDirection: 'row', alignItems: 'center' },
@@ -247,8 +247,8 @@ export const styles = StyleSheet.create({
   levelGridPromptRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
   levelGridSelectTitle: { fontSize: isCompactWidth ? 18 : 20, fontWeight: '900', color: '#111827' },
   levelGridContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', paddingHorizontal: 0 },
-  levelGridItem: { width: '18.4%', minHeight: isCompactWidth ? 68 : 74, backgroundColor: '#f8fafc', borderRadius: 18, borderWidth: 1.5, paddingVertical: isCompactWidth ? 8 : 10, paddingHorizontal: 2, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
-  levelGridCircle: { width: isCompactWidth ? 34 : 38, height: isCompactWidth ? 34 : 38, borderRadius: 19, justifyContent: 'center', alignItems: 'center', marginBottom: 6 },
+  levelGridItem: { width: '48%', minHeight: isCompactWidth ? 82 : 90, backgroundColor: '#f8fafc', borderRadius: 18, borderWidth: 1.5, paddingVertical: isCompactWidth ? 10 : 12, paddingHorizontal: 8, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
+  levelGridCircle: { width: isCompactWidth ? 38 : 42, height: isCompactWidth ? 38 : 42, borderRadius: 21, justifyContent: 'center', alignItems: 'center', marginBottom: 6 },
   levelGridNumber: { color: '#ffffff', fontSize: isCompactWidth ? 16 : 17, fontWeight: '900' },
   levelGridLabel: { fontSize: 14, fontWeight: '700', color: '#111827', marginBottom: 6 },
   levelGridStars: { flexDirection: 'row', alignItems: 'center', transform: [{ scale: isCompactWidth ? 0.82 : 0.92 }] },
@@ -259,7 +259,7 @@ export const styles = StyleSheet.create({
   levelGridHardestLabel: { fontSize: 12, color: '#dc2626', fontWeight: '700' },
 
   // Practice Screen
-  practiceHeader: { position: 'relative', borderRadius: cardRadius, marginHorizontal: pagePadding, paddingTop: 8, padding: 8, paddingBottom: 8, marginBottom: 4, minHeight: 44, marginTop: isCompactWidth ? 4 : 8 },
+  practiceHeader: { position: 'relative', borderRadius: cardRadius, marginHorizontal: pagePadding, paddingTop: 8, padding: 8, paddingBottom: 8, marginBottom: 4, minHeight: 44, marginTop: isCompactWidth ? 12 : 16 },
   practiceHeaderRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' },
   practiceBackButton: { width: 34, height: 34, justifyContent: 'center', alignItems: 'center', marginRight: 10 },
   practiceHeaderTitle: { fontSize: isCompactWidth ? 17 : 19, fontWeight: '700', color: '#ffffff' },
@@ -283,10 +283,10 @@ export const styles = StyleSheet.create({
   practiceTimerText: { fontSize: 13, fontWeight: '700', color: '#6b7280', marginTop: 4 },
   feedbackRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center', gap: 10, marginTop: 12, marginHorizontal: 10 },
   feedbackText: { fontSize: 14, fontWeight: '700', textAlign: 'left', lineHeight: 20, flex: 1 },
-  optionsContainer: { marginBottom: 16 },
-  optionButton: { minHeight: 52, flexDirection: 'row', alignItems: 'center', paddingVertical: isCompactWidth ? 12 : 14, paddingHorizontal: 14, borderRadius: 12, marginBottom: 8, borderWidth: 2, gap: 10 },
-  optionLabel: { fontSize: 16, fontWeight: '700', minWidth: 28 },
-  optionText: { fontSize: 16, fontWeight: '600', flex: 1 },
+  optionsContainer: { marginBottom: 16, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  optionButton: { width: '48%', minHeight: 58, flexDirection: 'row', alignItems: 'center', paddingVertical: isCompactWidth ? 12 : 14, paddingHorizontal: 10, borderRadius: 12, marginBottom: 10, borderWidth: 2, gap: 8 },
+  optionLabel: { width: 28, height: 28, borderRadius: 14, overflow: 'hidden', backgroundColor: 'rgba(17,24,39,0.1)', fontSize: 14, lineHeight: 28, fontWeight: '800', textAlign: 'center' },
+  optionText: { fontSize: isCompactWidth ? 14 : 15, lineHeight: isCompactWidth ? 18 : 20, fontWeight: '600', flex: 1, flexShrink: 1 },
   practiceNextButtonContainer: { paddingHorizontal: pagePadding, paddingTop: 8, paddingBottom: 14, backgroundColor: '#eef4ff' },
   practiceNextButton: { minHeight: 48, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 20, borderRadius: 14, shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 4 },
   practiceNextButtonText: { color: '#ffffff', fontSize: 14, fontWeight: '700' },

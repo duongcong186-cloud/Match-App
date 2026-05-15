@@ -50,30 +50,21 @@ const videoList: VideoLesson[] = [
 const getYouTubeThumbnail = (videoId: string) => `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
 const getEmbedUrl = (videoId: string) =>
-  `https://www.youtube.com/embed/${videoId}?playsinline=1&controls=1&rel=0&modestbranding=1&fs=1`;
-
-const getWatchUrl = (videoId: string) => `https://www.youtube.com/watch?v=${videoId}`;
+  `https://www.youtube-nocookie.com/embed/${videoId}?playsinline=1&controls=1&rel=0&modestbranding=1&fs=1`;
 
 export function VideoLessonsLevelScreen({ navigation }: Props) {
   const category = categories.find(cat => cat.key === 'video')!;
   const [selectedVideo, setSelectedVideo] = useState<VideoLesson | null>(null);
-  const [useWatchPage, setUseWatchPage] = useState(false);
 
   const openVideo = (video: VideoLesson) => {
-    setUseWatchPage(true);
     setSelectedVideo(video);
   };
 
   const closeVideoModal = () => {
     setSelectedVideo(null);
-    setUseWatchPage(false);
   };
 
-  const videoUrl = selectedVideo
-    ? useWatchPage
-      ? getWatchUrl(selectedVideo.videoId)
-      : getEmbedUrl(selectedVideo.videoId)
-    : undefined;
+  const videoUrl = selectedVideo ? getEmbedUrl(selectedVideo.videoId) : undefined;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -150,11 +141,7 @@ export function VideoLessonsLevelScreen({ navigation }: Props) {
             <Text numberOfLines={1} style={styles.videoModalTitle}>
               {selectedVideo?.title ?? 'Video Lesson'}
             </Text>
-            <TouchableOpacity style={styles.videoModeButton} activeOpacity={0.75} onPress={() => setUseWatchPage(value => !value)}>
-              <Text style={styles.videoModeButtonText}>
-                {useWatchPage ? 'Embed' : 'YouTube'}
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.videoModeButton} />
           </View>
 
           {videoUrl && (
@@ -183,14 +170,15 @@ export function VideoLessonsLevelScreen({ navigation }: Props) {
                   request.url.startsWith('vnd.youtube') ||
                   request.url.startsWith('intent://')
                 ) {
-                  setUseWatchPage(true);
                   return false;
                 }
 
-                return request.url.startsWith('http') || request.url.startsWith('about:blank');
+                return (
+                  request.url.startsWith('about:blank') ||
+                  request.url.startsWith('https://www.youtube-nocookie.com/embed/') ||
+                  request.url.startsWith('https://www.youtube.com/embed/')
+                );
               }}
-              onHttpError={() => setUseWatchPage(true)}
-              onError={() => setUseWatchPage(true)}
               renderLoading={() => (
                 <View style={styles.videoLoadingContainer}>
                   <Text style={styles.videoLoadingText}>Loading video...</Text>
@@ -204,9 +192,9 @@ export function VideoLessonsLevelScreen({ navigation }: Props) {
                   <TouchableOpacity
                     style={styles.videoRetryButton}
                     activeOpacity={0.8}
-                    onPress={() => setUseWatchPage(true)}
+                    onPress={() => selectedVideo && setSelectedVideo({ ...selectedVideo })}
                   >
-                    <Text style={styles.videoRetryButtonText}>Try YouTube page</Text>
+                    <Text style={styles.videoRetryButtonText}>Retry</Text>
                   </TouchableOpacity>
                 </View>
               )}
